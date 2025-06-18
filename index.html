@@ -2,14 +2,7 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-  <meta
-    name="viewport"
-    content="width=device-width,
-             initial-scale=1.0,
-             maximum-scale=1.0,
-             user-scalable=no"
-  >
-
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
     <title>Farmer Market - Premium Mobile App</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
@@ -18,51 +11,41 @@
         * {
             font-family: 'Poppins', sans-serif;
         }
-        
         .gradient-bg {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
         .card-shadow {
             box-shadow: 0 10px 25px rgba(0,0,0,0.1);
         }
-        
         .btn-primary {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             transition: all 0.3s ease;
         }
-        
         .btn-primary:hover {
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
-        
         .product-card {
             transition: all 0.3s ease;
             border-radius: 15px;
             overflow: hidden;
         }
-        
         .product-card:hover {
             transform: translateY(-5px);
             box-shadow: 0 15px 30px rgba(0,0,0,0.15);
         }
-        
         .bottom-nav {
             background: rgba(255, 255, 255, 0.95);
             backdrop-filter: blur(10px);
             border-top: 1px solid rgba(0,0,0,0.1);
         }
-        
         .nav-item {
             transition: all 0.3s ease;
         }
-        
         .nav-item.active {
             color: #4CAF50;
             transform: scale(1.1);
         }
-        
         .floating-cart {
             position: fixed;
             top: 20px;
@@ -78,24 +61,20 @@
             box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
             animation: pulse 2s infinite;
         }
-        
         @keyframes pulse {
             0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
             70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
             100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
         }
-        
         .input-field {
             border-radius: 12px;
             border: 2px solid #e2e8f0;
             transition: all 0.3s ease;
         }
-        
         .input-field:focus {
             border-color: #4CAF50;
             box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
         }
-        
         .category-tag {
             background: linear-gradient(45deg, #667eea, #764ba2);
             color: white;
@@ -104,7 +83,6 @@
             font-size: 12px;
             font-weight: 500;
         }
-        
         .price-tag {
             background: linear-gradient(45deg, #4CAF50, #45a049);
             color: white;
@@ -113,7 +91,6 @@
             font-weight: 600;
             font-size: 14px;
         }
-        
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #4CAF50;
@@ -122,12 +99,10 @@
             height: 30px;
             animation: spin 1s linear infinite;
         }
-        
         @keyframes spin {
             0% { transform: rotate(0deg); }
             100% { transform: rotate(360deg); }
         }
-        
         .notification {
             position: fixed;
             top: 20px;
@@ -141,39 +116,44 @@
             box-shadow: 0 5px 15px rgba(0,0,0,0.3);
             animation: slideDown 0.5s ease;
         }
-        
         @keyframes slideDown {
             from { transform: translate(-50%, -100%); opacity: 0; }
             to { transform: translate(-50%, 0); opacity: 1; }
         }
-        
         .success { background: linear-gradient(45deg, #4CAF50, #45a049); }
         .error { background: linear-gradient(45deg, #f44336, #d32f2f); }
-        
-        .section {
-            min-height: calc(100vh - 80px);
-            padding-bottom: 100px;
-        }
-        
         .header-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
-        
         .empty-state {
             text-align: center;
             color: #64748b;
             padding: 40px 20px;
         }
-        
         .empty-state i {
             font-size: 4rem;
             margin-bottom: 1rem;
             color: #cbd5e1;
         }
+        .content-wrapper {
+            padding-top: 80px;
+            padding-bottom: 60px;
+            overflow-y: auto;
+            height: 100vh;
+        }
+        .section {
+            padding: 1rem;
+        }
+        @media (max-width: 640px) {
+            .floating-cart {
+                top: auto;
+                bottom: 100px;
+                right: 20px;
+            }
+        }
     </style>
 </head>
 <body class="bg-gray-50">
-    <!-- Loading Screen -->
     <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
         <div class="text-center">
             <div class="loading-spinner mx-auto mb-4"></div>
@@ -181,17 +161,14 @@
         </div>
     </div>
 
-    <!-- Notification -->
     <div id="notification" class="notification hidden"></div>
 
-    <!-- Floating Cart -->
-    <div id="floatingCart" class="floating-cart cursor-pointer hidden">
+    <div id="floatingCart" class="floating-cart cursor-pointer hidden" onclick="toggleCartModal()">
         <i class="fas fa-shopping-cart text-white text-xl"></i>
         <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">0</span>
     </div>
 
-    <!-- Login/Signup Screen -->
-    <div id="authScreen" class="section gradient-bg flex items-center justify-center p-4">
+    <div id="authScreen" class="h-screen gradient-bg flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 w-full max-w-md card-shadow">
             <div class="text-center mb-8">
                 <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
@@ -201,17 +178,14 @@
                 <p class="text-gray-600">Fresh from farm to your table</p>
             </div>
 
-            <!-- Login Form -->
             <div id="loginForm">
                 <h2 class="text-2xl font-semibold mb-6 text-center">Welcome Back</h2>
                 <form id="loginFormElement" class="space-y-4">
                     <div>
-                        <input type="email" id="loginEmail" placeholder="Email" required
-                               class="w-full p-4 input-field">
+                        <input type="email" id="loginEmail" placeholder="Email" required class="w-full p-4 input-field">
                     </div>
                     <div>
-                        <input type="password" id="loginPassword" placeholder="Password" required
-                               class="w-full p-4 input-field">
+                        <input type="password" id="loginPassword" placeholder="Password" required class="w-full p-4 input-field">
                     </div>
                     <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold">
                         <i class="fas fa-sign-in-alt mr-2"></i>Login
@@ -223,21 +197,17 @@
                 </p>
             </div>
 
-            <!-- Signup Form -->
             <div id="signupForm" class="hidden">
                 <h2 class="text-2xl font-semibold mb-6 text-center">Join Us</h2>
                 <form id="signupFormElement" class="space-y-4">
                     <div>
-                        <input type="text" id="signupName" placeholder="Full Name" required
-                               class="w-full p-4 input-field">
+                        <input type="text" id="signupName" placeholder="Full Name" required class="w-full p-4 input-field">
                     </div>
                     <div>
-                        <input type="email" id="signupEmail" placeholder="Email" required
-                               class="w-full p-4 input-field">
+                        <input type="email" id="signupEmail" placeholder="Email" required class="w-full p-4 input-field">
                     </div>
                     <div>
-                        <input type="password" id="signupPassword" placeholder="Password" required
-                               class="w-full p-4 input-field">
+                        <input type="password" id="signupPassword" placeholder="Password" required class="w-full p-4 input-field">
                     </div>
                     <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold">
                         <i class="fas fa-user-plus mr-2"></i>Create Account
@@ -251,10 +221,8 @@
         </div>
     </div>
 
-    <!-- Main App -->
     <div id="mainApp" class="hidden">
-        <!-- Header -->
-        <header class="header-gradient text-white p-4 sticky top-0 z-40">
+        <header class="header-gradient text-white p-4 fixed top-0 left-0 right-0 z-40">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
                     <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
@@ -271,233 +239,201 @@
             </div>
         </header>
 
-        <!-- Home Section -->
-        <div id="homeSection" class="section p-4">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-home mr-2 text-green-600"></i>Market Fresh
-                </h2>
-                <p class="text-gray-600">Discover fresh products from local farmers</p>
-            </div>
+        <div class="content-wrapper pt-20 pb-16">
+            <div id="homeSection" class="section p-4">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-home mr-2 text-green-600"></i>Market Fresh
+                    </h2>
+                    <p class="text-gray-600">Discover fresh products from local farmers</p>
+                </div>
 
-            <!-- Search Bar -->
-            <div class="mb-6">
-                <div class="relative">
-                    <input type="text" id="searchInput" placeholder="Search products..." 
-                           class="w-full p-4 pl-12 input-field">
-                    <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                <div class="mb-6">
+                    <div class="relative">
+                        <input type="text" id="searchInput" placeholder="Search products..." class="w-full p-4 pl-12 input-field">
+                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+                    </div>
+                </div>
+
+                <div class="mb-6">
+                    <div class="flex space-x-2 overflow-x-auto pb-2">
+                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-green-100 text-green-800 font-semibold" data-category="all">
+                            <i class="fas fa-th-large mr-1"></i>All
+                        </button>
+                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="fruits">
+                            <i class="fas fa-apple-alt mr-1"></i>Fruits
+                        </button>
+                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="vegetables">
+                            <i class="fas fa-carrot mr-1"></i>Vegetables
+                        </button>
+                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="others">
+                            <i class="fas fa-leaf mr-1"></i>Others
+                        </button>
+                    </div>
+                </div>
+
+                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                <div id="emptyState" class="empty-state hidden">
+                    <i class="fas fa-seedling"></i>
+                    <h3 class="text-xl font-semibold mb-2">No products yet</h3>
+                    <p class="mb-4">Be the first to add a product to the marketplace!</p>
+                    <button class="btn-primary text-white px-6 py-3 rounded-xl" onclick="switchTab('sell')">
+                        <i class="fas fa-plus mr-2"></i>Add Product
+                    </button>
                 </div>
             </div>
 
-            <!-- Category Filter -->
-            <div class="mb-6">
-                <div class="flex space-x-2 overflow-x-auto pb-2">
-                    <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-green-100 text-green-800 font-semibold" data-category="all">
-                        <i class="fas fa-th-large mr-1"></i>All
-                    </button>
-                    <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="fruits">
-                        <i class="fas fa-apple-alt mr-1"></i>Fruits
-                    </button>
-                    <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="vegetables">
-                        <i class="fas fa-carrot mr-1"></i>Vegetables
-                    </button>
-                    <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="others">
-                        <i class="fas fa-leaf mr-1"></i>Others
-                    </button>
+            <div id="sellSection" class="section p-4 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-store mr-2 text-green-600"></i>Sell Products
+                    </h2>
+                    <p class="text-gray-600">Add your fresh products to the marketplace</p>
                 </div>
-            </div>
 
-            <!-- Products Grid -->
-            <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- Products will be loaded here -->
-            </div>
-
-            <!-- Empty State -->
-            <div id="emptyState" class="empty-state hidden">
-                <i class="fas fa-seedling"></i>
-                <h3 class="text-xl font-semibold mb-2">No products yet</h3>
-                <p class="mb-4">Be the first to add a product to the marketplace!</p>
-                <button class="btn-primary text-white px-6 py-3 rounded-xl" onclick="switchTab('sell')">
-                    <i class="fas fa-plus mr-2"></i>Add Product
-                </button>
-            </div>
-        </div>
-
-        <!-- Sell Section -->
-        <div id="sellSection" class="section p-4 hidden">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-store mr-2 text-green-600"></i>Sell Products
-                </h2>
-                <p class="text-gray-600">Add your fresh products to the marketplace</p>
-            </div>
-
-            <form id="sellForm" class="space-y-6">
-                <div class="bg-white rounded-2xl p-6 card-shadow">
-                    <h3 class="text-lg font-semibold mb-4 text-gray-800">Product Details</h3>
-                    
-                    <div class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
-                            <input type="text" id="productName" placeholder="e.g., Fresh Organic Apples" required
-                                   class="w-full p-4 input-field">
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                            <select id="productCategory" required class="w-full p-4 input-field">
-                                <option value="">Select Category</option>
-                                <option value="fruits">🍎 Fruits</option>
-                                <option value="vegetables">🥕 Vegetables</option>
-                                <option value="others">🌿 Others</option>
-                            </select>
-                        </div>
-
-                        <div class="grid grid-cols-2 gap-4">
+                <form id="sellForm" class="space-y-6">
+                    <div class="bg-white rounded-2xl p-6 card-shadow">
+                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Product Details</h3>
+                        <div class="space-y-4">
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (kg)</label>
-                                <input type="number" id="productQuantity" placeholder="10" min="0.1" step="0.1" required
-                                       class="w-full p-4 input-field">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
+                                <input type="text" id="productName" placeholder="e.g., Fresh Organic Apples" required class="w-full p-4 input-field">
                             </div>
                             <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Price per kg ($)</label>
-                                <input type="number" id="productPrice" placeholder="5.99" min="0.01" step="0.01" required
-                                       class="w-full p-4 input-field">
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
+                                <select id="productCategory" required class="w-full p-4 input-field">
+                                    <option value="">Select Category</option>
+                                    <option value="fruits">🍎 Fruits</option>
+                                    <option value="vegetables">🥕 Vegetables</option>
+                                    <option value="others">🌿 Others</option>
+                                </select>
+                            </div>
+                            <div class="grid grid-cols-2 gap-4">
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (kg)</label>
+                                    <input type="number" id="productQuantity" placeholder="10" min="0.1" step="0.1" required class="w-full p-4 input-field">
+                                </div>
+                                <div>
+                                    <label class="block text-sm font-medium text-gray-700 mb-2">Price per kg (₹)</label>
+                                    <input type="number" id="productPrice" placeholder="399" min="0.01" step="0.01" required class="w-full p-4 input-field">
+                                </div>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
+                                <input type="file" id="productImage" accept="image/*" class="w-full p-4 input-field">
+                                <p class="text-sm text-gray-500 mt-1">Optional: Upload an image for your product</p>
+                            </div>
+                            <div>
+                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
+                                <textarea id="productDescription" placeholder="Describe your product..." rows="3" class="w-full p-4 input-field resize-none"></textarea>
                             </div>
                         </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
-                            <input type="file" id="productImage" accept="image/*"
-                                   class="w-full p-4 input-field">
-                            <p class="text-sm text-gray-500 mt-1">Optional: Upload an image for your product</p>
-                        </div>
-
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                            <textarea id="productDescription" placeholder="Describe your product..." rows="3"
-                                      class="w-full p-4 input-field resize-none"></textarea>
-                        </div>
                     </div>
-                </div>
-
-                <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold text-lg">
-                    <i class="fas fa-plus-circle mr-2"></i>Add Product to Market
-                </button>
-            </form>
-
-            <!-- My Products -->
-            <div class="mt-8">
-                <h3 class="text-xl font-semibold mb-4 text-gray-800">
-                    <i class="fas fa-box mr-2 text-green-600"></i>My Products
-                </h3>
-                <div id="myProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                    <!-- User's products will be loaded here -->
-                </div>
-            </div>
-        </div>
-
-        <!-- Market Section -->
-        <div id="marketSection" class="section p-4 hidden">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-shopping-basket mr-2 text-green-600"></i>Marketplace
-                </h2>
-                <p class="text-gray-600">Browse all available products</p>
-            </div>
-
-            <!-- Market Stats -->
-            <div class="grid grid-cols-3 gap-4 mb-6">
-                <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                    <i class="fas fa-boxes text-blue-500 text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800" id="totalProducts">0</p>
-                    <p class="text-sm text-gray-600">Products</p>
-                </div>
-                <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                    <i class="fas fa-users text-green-500 text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800" id="totalSellers">0</p>
-                    <p class="text-sm text-gray-600">Sellers</p>
-                </div>
-                <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                    <i class="fas fa-star text-yellow-500 text-2xl mb-2"></i>
-                    <p class="text-2xl font-bold text-gray-800">4.8</p>
-                    <p class="text-sm text-gray-600">Rating</p>
-                </div>
-            </div>
-
-            <!-- Market Products -->
-            <div id="marketProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4">
-                <!-- All products will be loaded here -->
-            </div>
-        </div>
-
-        <!-- Account Section -->
-        <div id="accountSection" class="section p-4 hidden">
-            <div class="mb-6">
-                <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                    <i class="fas fa-user-circle mr-2 text-green-600"></i>My Account
-                </h2>
-                <p class="text-gray-600">Manage your profile and settings</p>
-            </div>
-
-            <!-- Profile Card -->
-            <div class="bg-white rounded-2xl p-6 card-shadow mb-6">
-                <div class="text-center mb-6">
-                    <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                        <i class="fas fa-user text-white text-3xl"></i>
-                    </div>
-                    <h3 class="text-xl font-semibold text-gray-800" id="profileName">User Name</h3>
-                    <p class="text-gray-600" id="profileEmail">user@email.com</p>
-                </div>
-
-                <form id="profileForm" class="space-y-4">
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                        <input type="text" id="updateName" required class="w-full p-4 input-field">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Phone (Optional)</label>
-                        <input type="tel" id="updatePhone" class="w-full p-4 input-field">
-                    </div>
-                    <div>
-                        <label class="block text-sm font-medium text-gray-700 mb-2">Location (Optional)</label>
-                        <input type="text" id="updateLocation" placeholder="City, State" class="w-full p-4 input-field">
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
-                        <i class="fas fa-save mr-2"></i>Update Profile
+                    <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold text-lg">
+                        <i class="fas fa-plus-circle mr-2"></i>Add Product to Market
                     </button>
                 </form>
-            </div>
 
-            <!-- Account Stats -->
-            <div class="grid grid-cols-2 gap-4 mb-6">
-                <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                    <i class="fas fa-box text-blue-500 text-xl mb-2"></i>
-                    <p class="text-lg font-bold text-gray-800" id="userProductCount">0</p>
-                    <p class="text-sm text-gray-600">Products Listed</p>
-                </div>
-                <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                    <i class="fas fa-calendar text-green-500 text-xl mb-2"></i>
-                    <p class="text-lg font-bold text-gray-800" id="memberSince">2024</p>
-                    <p class="text-sm text-gray-600">Member Since</p>
+                <div class="mt-8">
+                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
+                        <i class="fas fa-box mr-2 text-green-600"></i>My Products
+                    </h3>
+                    <div id="myProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
                 </div>
             </div>
 
-            <!-- Account Actions -->
-            <div class="space-y-3">
-                <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-bell mr-3 text-yellow-500"></i>Notification Settings
-                </button>
-                <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-shield-alt mr-3 text-blue-500"></i>Privacy & Security
-                </button>
-                <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                    <i class="fas fa-question-circle mr-3 text-purple-500"></i>Help & Support
-                </button>
+            <div id="marketSection" class="section p-4 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-shopping-basket mr-2 text-green-600"></i>Marketplace
+                    </h2>
+                    <p class="text-gray-600">Browse all available products</p>
+                </div>
+
+                <div class="grid grid-cols-3 gap-4 mb-6">
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
+                        <i class="fas fa-boxes text-blue-500 text-2xl mb-2"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="totalProducts">0</p>
+                        <p class="text-sm text-gray-600">Products</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
+                        <i class="fas fa-users text-green-500 text-2xl mb-2"></i>
+                        <p class="text-2xl font-bold text-gray-800" id="totalSellers">0</p>
+                        <p class="text-sm text-gray-600">Sellers</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
+                        <i class="fas fa-star text-yellow-500 text-2xl mb-2"></i>
+                        <p class="text-2xl font-bold text-gray-800">4.8</p>
+                        <p class="text-sm text-gray-600">Rating</p>
+                    </div>
+                </div>
+
+                <div id="marketProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            </div>
+
+            <div id="accountSection" class="section p-4 hidden">
+                <div class="mb-6">
+                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
+                        <i class="fas fa-user-circle mr-2 text-green-600"></i>My Account
+                    </h2>
+                    <p class="text-gray-600">Manage your profile and settings</p>
+                </div>
+
+                <div class="bg-white rounded-2xl p-6 card-shadow mb-6">
+                    <div class="text-center mb-6">
+                        <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
+                            <i class="fas fa-user text-white text-3xl"></i>
+                        </div>
+                        <h3 class="text-xl font-semibold text-gray-800" id="profileName">User Name</h3>
+                        <p class="text-gray-600" id="profileEmail">user@email.com</p>
+                    </div>
+
+                    <form id="profileForm" class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
+                            <input type="text" id="updateName" required class="w-full p-4 input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone (Optional)</label>
+                            <input type="tel" id="updatePhone" class="w-full p-4 input-field">
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium text-gray-700 mb-2">Location (Optional)</label>
+                            <input type="text" id="updateLocation" placeholder="City, State" class="w-full p-4 input-field">
+                        </div>
+                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
+                            <i class="fas fa-save mr-2"></i>Update Profile
+                        </button>
+                    </form>
+                </div>
+
+                <div class="grid grid-cols-2 gap-4 mb-6">
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
+                        <i class="fas fa-box text-blue-500 text-xl mb-2"></i>
+                        <p class="text-lg font-bold text-gray-800" id="userProductCount">0</p>
+                        <p class="text-sm text-gray-600">Products Listed</p>
+                    </div>
+                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
+                        <i class="fas fa-calendar text-green-500 text-xl mb-2"></i>
+                        <p class="text-lg font-bold text-gray-800" id="memberSince">2024</p>
+                        <p class="text-sm text-gray-600">Member Since</p>
+                    </div>
+                </div>
+
+                <div class="space-y-3">
+                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-bell mr-3 text-yellow-500"></i>Notification Settings
+                    </button>
+                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-shield-alt mr-3 text-blue-500"></i>Privacy & Security
+                    </button>
+                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
+                        <i class="fas fa-question-circle mr-3 text-purple-500"></i>Help & Support
+                    </button>
+                </div>
             </div>
         </div>
 
-        <!-- Cart Modal -->
         <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end sm:items-center justify-center">
             <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto">
                 <div class="p-6">
@@ -507,15 +443,11 @@
                             <i class="fas fa-times text-xl"></i>
                         </button>
                     </div>
-
-                    <div id="cartItems" class="space-y-3 mb-6">
-                        <!-- Cart items will be loaded here -->
-                    </div>
-
+                    <div id="cartItems" class="space-y-3 mb-6"></div>
                     <div class="border-t pt-4">
                         <div class="flex justify-between items-center mb-4">
                             <span class="text-lg font-semibold">Total:</span>
-                            <span class="text-xl font-bold text-green-600" id="cartTotal">$0.00</span>
+                            <span class="text-xl font-bold text-green-600" id="cartTotal">₹0.00</span>
                         </div>
                         <button id="checkoutBtn" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
                             <i class="fas fa-credit-card mr-2"></i>Checkout
@@ -525,7 +457,6 @@
             </div>
         </div>
 
-        <!-- Bottom Navigation -->
         <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-40">
             <div class="flex justify-around py-3">
                 <button class="nav-item active flex flex-col items-center p-2" data-tab="home">
@@ -548,13 +479,11 @@
         </nav>
     </div>
 
-    <!-- Firebase SDKs -->
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
 
     <script>
-        // Firebase Configuration
         const firebaseConfig = {
             apiKey: "AIzaSyDixufxD2KlUSPgqPIJQNatpQ0XEnpTouA",
             authDomain: "lumilearn-df84e.firebaseapp.com",
@@ -566,37 +495,31 @@
             measurementId: "G-4LZM3VLSSS"
         };
 
-        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
 
-        // Global Variables
         let currentUser = null;
         let allProducts = [];
         let userProducts = [];
         let cart = JSON.parse(localStorage.getItem('cart')) || [];
         let currentTab = 'home';
 
-        // DOM Elements
         const authScreen = document.getElementById('authScreen');
         const mainApp = document.getElementById('mainApp');
         const loadingScreen = document.getElementById('loadingScreen');
         const notification = document.getElementById('notification');
 
-        // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
                 checkAuthState();
             }, 2000);
-
             setupEventListeners();
             loadSampleData();
             updateCartUI();
         });
 
-        // Auth State Management
         function checkAuthState() {
             const savedUser = localStorage.getItem('currentUser');
             if (savedUser) {
@@ -617,29 +540,19 @@
             mainApp.classList.remove('hidden');
             updateUserInfo();
             loadAllProducts();
+            switchTab(currentTab);
         }
 
-        // Event Listeners Setup
         function setupEventListeners() {
-            // Auth Forms
             document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
             document.getElementById('signupFormElement').addEventListener('submit', handleSignup);
             document.getElementById('showSignup').addEventListener('click', showSignupForm);
             document.getElementById('showLogin').addEventListener('click', showLoginForm);
-            
-            // Navigation
             document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', (e) => {
-                    const tab = e.currentTarget.dataset.tab;
-                    switchTab(tab);
-                });
+                item.addEventListener('click', (e) => switchTab(e.currentTarget.dataset.tab));
             });
-
-            // Forms
             document.getElementById('sellForm').addEventListener('submit', handleAddProduct);
             document.getElementById('profileForm').addEventListener('submit', handleUpdateProfile);
-            
-            // Search and Filter
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             document.querySelectorAll('.category-filter').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -648,30 +561,25 @@
                     updateFilterButtons(e.currentTarget);
                 });
             });
-
-            // Cart
-            document.getElementById('floatingCart').addEventListener('click', toggleCartModal);
             document.getElementById('closeCartModal').addEventListener('click', toggleCartModal);
             document.getElementById('checkoutBtn').addEventListener('click', handleCheckout);
-            
-            // Logout
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         }
 
-        // Authentication Functions
         async function handleLogin(e) {
             e.preventDefault();
-            const email = document.getElementById('loginEmail').value;
+            const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
-
+            if (!email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
             try {
-                // Simulate login (replace with actual Firebase auth)
                 const userData = {
                     email: email,
                     name: email.split('@')[0],
                     id: 'user_' + Date.now()
                 };
-                
                 currentUser = userData;
                 localStorage.setItem('currentUser', JSON.stringify(userData));
                 showNotification('Login successful!', 'success');
@@ -683,19 +591,20 @@
 
         async function handleSignup(e) {
             e.preventDefault();
-            const name = document.getElementById('signupName').value;
-            const email = document.getElementById('signupEmail').value;
+            const name = document.getElementById('signupName').value.trim();
+            const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
-
+            if (!name || !email || !password) {
+                showNotification('Please fill in all fields', 'error');
+                return;
+            }
             try {
-                // Simulate signup (replace with actual Firebase auth)
                 const userData = {
                     email: email,
                     name: name,
                     id: 'user_' + Date.now(),
-                    memberSince: new Date().getFullYear()
+                    memberSince: new Date().toLocaleDateString()
                 };
-                
                 currentUser = userData;
                 localStorage.setItem('currentUser', JSON.stringify(userData));
                 showNotification('Account created successfully!', 'success');
@@ -724,32 +633,16 @@
             showAuthScreen();
         }
 
-        // UI Functions
         function switchTab(tab) {
-            // Hide all sections
-            document.querySelectorAll('.section').forEach(section => {
-                section.classList.add('hidden');
-            });
-            
-            // Show selected section
+            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
             document.getElementById(tab + 'Section').classList.remove('hidden');
-            
-            // Update navigation
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.classList.remove('active');
-            });
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
             document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            
             currentTab = tab;
-            
-            // Load section-specific data
-            if (tab === 'market') {
-                updateMarketStats();
-            } else if (tab === 'sell') {
-                loadUserProducts();
-            } else if (tab === 'account') {
-                updateAccountInfo();
-            }
+            if (tab === 'market') updateMarketStats();
+            else if (tab === 'sell') loadUserProducts();
+            else if (tab === 'account') updateAccountInfo();
+            document.querySelector('.content-wrapper').scrollTop = 0;
         }
 
         function updateUserInfo() {
@@ -762,45 +655,32 @@
             notification.textContent = message;
             notification.className = `notification ${type}`;
             notification.classList.remove('hidden');
-            
-            setTimeout(() => {
-                notification.classList.add('hidden');
-            }, 3000);
+            setTimeout(() => notification.classList.add('hidden'), 3000);
         }
 
-        // Product Management
         async function handleAddProduct(e) {
             e.preventDefault();
-            
-            const productName = document.getElementById('productName').value;
+            const productName = document.getElementById('productName').value.trim();
             const productCategory = document.getElementById('productCategory').value;
             const productQuantity = parseFloat(document.getElementById('productQuantity').value);
             const productPrice = parseFloat(document.getElementById('productPrice').value);
-            const productDescription = document.getElementById('productDescription').value;
+            const productDescription = document.getElementById('productDescription').value.trim();
             const productImageFile = document.getElementById('productImage').files[0];
-            
-            let imageUrl = '';
-            
-            if (productImageFile) {
-                try {
-                    imageUrl = await new Promise((resolve, reject) => {
-                        const reader = new FileReader();
-                        reader.onload = function(event) {
-                            resolve(event.target.result);
-                        };
-                        reader.onerror = function(error) {
-                            reject(error);
-                        };
-                        reader.readAsDataURL(productImageFile);
-                    });
-                } catch (error) {
-                    showNotification('Failed to upload image. Please try again.', 'error');
-                    return;
-                }
-            } else {
-                imageUrl = getDefaultImage(productCategory);
+
+            if (!productName || !productCategory || !productQuantity || !productPrice) {
+                showNotification('Please fill in all required fields', 'error');
+                return;
             }
-            
+
+            let imageUrl = productImageFile ? await new Promise((resolve) => {
+                const reader = new FileReader();
+                reader.onload = (event) => resolve(event.target.result);
+                reader.readAsDataURL(productImageFile);
+            }).catch(() => {
+                showNotification('Failed to upload image', 'error');
+                return getDefaultImage(productCategory);
+            }) : getDefaultImage(productCategory);
+
             const productData = {
                 id: 'product_' + Date.now(),
                 name: productName,
@@ -818,28 +698,21 @@
                 let products = JSON.parse(localStorage.getItem('allProducts')) || [];
                 products.push(productData);
                 localStorage.setItem('allProducts', JSON.stringify(products));
-                
                 allProducts = products;
-                
                 showNotification('Product added successfully!', 'success');
                 document.getElementById('sellForm').reset();
                 loadAllProducts();
                 loadUserProducts();
             } catch (error) {
-                showNotification('Failed to add product. Please try again.', 'error');
+                showNotification('Failed to add product', 'error');
             }
         }
 
         function loadAllProducts() {
             const savedProducts = localStorage.getItem('allProducts');
-            if (savedProducts) {
-                allProducts = JSON.parse(savedProducts);
-            }
-            
+            allProducts = savedProducts ? JSON.parse(savedProducts) : [];
             displayProducts(allProducts, 'productsGrid');
             displayProducts(allProducts, 'marketProductsGrid');
-            
-            // Show/hide empty state
             const emptyState = document.getElementById('emptyState');
             if (allProducts.length === 0) {
                 emptyState.classList.remove('hidden');
@@ -852,59 +725,46 @@
 
         function loadUserProducts() {
             if (!currentUser) return;
-            
             userProducts = allProducts.filter(product => product.sellerId === currentUser.id);
             displayProducts(userProducts, 'myProductsGrid');
-            
-            // Update account stats
-            document.getElementById('userProductCount').textContent = userProducts.length;
         }
 
         function displayProducts(products, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
-            
-            if (products.length === 0) {
+            if (!products || products.length === 0) {
                 container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No products found</div>';
                 return;
             }
-            
-            container.innerHTML = products.map(product => `
-                <div class="product-card bg-white rounded-2xl overflow-hidden card-shadow">
-                    <div class="relative">
-                        <img src="${product.image}" alt="${product.name}" 
-                             class="w-full h-48 object-cover"
-                             onerror="this.src='${getDefaultImage(product.category)}'">
-                        <div class="absolute top-3 left-3">
-                            <span class="category-tag">${getCategoryIcon(product.category)} ${product.category}</span>
+            container.innerHTML = products.map(product => {
+                const isOwnProduct = currentUser && product.sellerId === currentUser.id;
+                const addButton = isOwnProduct && containerId === 'productsGrid' ? '' : 
+                    `<button onclick="addToCart('${product.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors">
+                        <i class="fas fa-cart-plus mr-1"></i>Add
+                    </button>`;
+                return `
+                    <div class="product-card bg-white rounded-2xl overflow-hidden card-shadow">
+                        <div class="relative">
+                            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" onerror="this.src='${getDefaultImage(product.category)}'">
+                            <div class="absolute top-3 left-3">
+                                <span class="category-tag">${getCategoryIcon(product.category)} ${product.category}</span>
+                            </div>
+                        </div>
+                        <div class="p-4">
+                            <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description || 'Fresh and organic produce'}</p>
+                            <div class="flex items-center justify-between mb-3">
+                                <div class="price-tag">₹${product.price}/kg</div>
+                                <span class="text-sm text-gray-500"><i class="fas fa-weight mr-1"></i>${product.quantity}kg available</span>
+                            </div>
+                            <div class="flex items-center justify-between">
+                                <div class="text-xs text-gray-500"><i class="fas fa-user mr-1"></i>by ${product.sellerName}</div>
+                                ${addButton}
+                            </div>
                         </div>
                     </div>
-                    
-                    <div class="p-4">
-                        <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
-                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description || 'Fresh and organic produce'}</p>
-                        
-                        <div class="flex items-center justify-between mb-3">
-                            <div class="price-tag">
-                                $${product.price}/kg
-                            </div>
-                            <span class="text-sm text-gray-500">
-                                <i class="fas fa-weight mr-1"></i>${product.quantity}kg available
-                            </span>
-                        </div>
-                        
-                        <div class="flex items-center justify-between">
-                            <div class="text-xs text-gray-500">
-                                <i class="fas fa-user mr-1"></i>by ${product.sellerName}
-                            </div>
-                            <button onclick="addToCart('${product.id}')" 
-                                    class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors">
-                                <i class="fas fa-cart-plus mr-1"></i>Add
-                            </button>
-                        </div>
-                    </div>
-                </div>
-            `).join('');
+                `;
+            }).join('');
         }
 
         function getDefaultImage(category) {
@@ -917,30 +777,22 @@
         }
 
         function getCategoryIcon(category) {
-            const icons = {
-                fruits: '🍎',
-                vegetables: '🥕',
-                others: '🌿'
-            };
+            const icons = { fruits: '🍎', vegetables: '🥕', others: '🌿' };
             return icons[category] || '🌿';
         }
 
-        // Search and Filter
         function handleSearch(e) {
-            const query = e.target.value.toLowerCase();
-            const filtered = allProducts.filter(product => 
+            const query = e.target.value.toLowerCase().trim();
+            const filtered = allProducts.filter(product =>
                 product.name.toLowerCase().includes(query) ||
-                product.description.toLowerCase().includes(query) ||
+                (product.description && product.description.toLowerCase().includes(query)) ||
                 product.category.toLowerCase().includes(query)
             );
             displayProducts(filtered, 'productsGrid');
         }
 
         function filterProducts(category) {
-            let filtered = allProducts;
-            if (category !== 'all') {
-                filtered = allProducts.filter(product => product.category === category);
-            }
+            const filtered = category === 'all' ? allProducts : allProducts.filter(product => product.category === category);
             displayProducts(filtered, 'productsGrid');
         }
 
@@ -953,22 +805,19 @@
             activeBtn.classList.add('bg-green-100', 'text-green-800');
         }
 
-        // Cart Management
         function addToCart(productId) {
             const product = allProducts.find(p => p.id === productId);
             if (!product) return;
-            
             const existingItem = cart.find(item => item.id === productId);
             if (existingItem) {
-                existingItem.quantity += 1;
+                if (existingItem.quantity < product.quantity) existingItem.quantity += 1;
+                else {
+                    showNotification('Maximum quantity reached', 'error');
+                    return;
+                }
             } else {
-                cart.push({
-                    ...product,
-                    quantity: 1,
-                    cartId: Date.now()
-                });
+                cart.push({ ...product, quantity: 1 });
             }
-            
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartUI();
             showNotification(`${product.name} added to cart!`, 'success');
@@ -983,15 +832,18 @@
 
         function updateCartQuantity(productId, change) {
             const item = cart.find(item => item.id === productId);
-            if (item) {
-                item.quantity += change;
-                if (item.quantity <= 0) {
-                    removeFromCart(productId);
-                } else {
-                    localStorage.setItem('cart', JSON.stringify(cart));
-                    updateCartUI();
-                    displayCartItems();
-                }
+            if (!item) return;
+            const product = allProducts.find(p => p.id === productId);
+            if (change > 0 && item.quantity >= product.quantity) {
+                showNotification('Maximum quantity reached', 'error');
+                return;
+            }
+            item.quantity += change;
+            if (item.quantity <= 0) removeFromCart(productId);
+            else {
+                localStorage.setItem('cart', JSON.stringify(cart));
+                updateCartUI();
+                displayCartItems();
             }
         }
 
@@ -999,61 +851,46 @@
             const cartBadge = document.getElementById('cartBadge');
             const floatingCart = document.getElementById('floatingCart');
             const cartTotal = document.getElementById('cartTotal');
-            
             const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
             const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            
             cartBadge.textContent = totalItems;
-            if (cartTotal) cartTotal.textContent = `$${totalPrice.toFixed(2)}`;
-            
-            if (totalItems > 0) {
-                floatingCart.classList.remove('hidden');
-            } else {
-                floatingCart.classList.add('hidden');
-            }
+            cartTotal.textContent = `₹${totalPrice.toFixed(2)}`;
+            floatingCart.classList.toggle('hidden', totalItems === 0);
         }
 
         function toggleCartModal() {
             const modal = document.getElementById('cartModal');
             modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) {
-                displayCartItems();
-            }
+            if (!modal.classList.contains('hidden')) displayCartItems();
         }
 
         function displayCartItems() {
             const container = document.getElementById('cartItems');
-            
-            if (cart.length === 0) {
+            if (!cart.length) {
                 container.innerHTML = `
                     <div class="text-center py-8 text-gray-500">
                         <i class="fas fa-shopping-cart text-4xl mb-3"></i>
                         <p>Your cart is empty</p>
-                    </div>
-                `;
+                    </div>`;
                 return;
             }
-            
             container.innerHTML = cart.map(item => `
                 <div class="flex items-center space-x-3 bg-gray-50 rounded-xl p-3">
                     <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
                     <div class="flex-1">
                         <h4 class="font-semibold text-gray-800">${item.name}</h4>
-                        <p class="text-sm text-gray-600">$${item.price}/kg</p>
+                        <p class="text-sm text-gray-600">₹${item.price}/kg</p>
                     </div>
                     <div class="flex items-center space-x-2">
-                        <button onclick="updateCartQuantity('${item.id}', -1)" 
-                                class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
+                        <button onclick="updateCartQuantity('${item.id}', -1)" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
                             <i class="fas fa-minus text-sm"></i>
                         </button>
                         <span class="w-8 text-center font-semibold">${item.quantity}</span>
-                        <button onclick="updateCartQuantity('${item.id}', 1)" 
-                                class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center">
+                        <button onclick="updateCartQuantity('${item.id}', 1)" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center">
                             <i class="fas fa-plus text-sm"></i>
                         </button>
                     </div>
-                    <button onclick="removeFromCart('${item.id}')" 
-                            class="text-red-500 hover:text-red-700">
+                    <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
@@ -1061,59 +898,55 @@
         }
 
         function handleCheckout() {
-            if (cart.length === 0) {
+            if (!cart.length) {
                 showNotification('Your cart is empty!', 'error');
                 return;
             }
-            
-            // Simulate checkout process
             const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            showNotification(`Order placed successfully! Total: $${total.toFixed(2)}`, 'success');
-            
-            // Clear cart
+            showNotification(`Order placed successfully! Total: ₹${total.toFixed(2)}`, 'success');
             cart = [];
             localStorage.setItem('cart', JSON.stringify(cart));
             updateCartUI();
             toggleCartModal();
         }
 
-        // Account Management
         function handleUpdateProfile(e) {
             e.preventDefault();
-            
+            const name = document.getElementById('updateName').value.trim();
+            if (!name) {
+                showNotification('Name is required', 'error');
+                return;
+            }
             const updatedData = {
                 ...currentUser,
-                name: document.getElementById('updateName').value,
-                phone: document.getElementById('updatePhone').value,
-                location: document.getElementById('updateLocation').value
+                name: name,
+                phone: document.getElementById('updatePhone').value.trim(),
+                location: document.getElementById('updateLocation').value.trim()
             };
-            
             currentUser = updatedData;
             localStorage.setItem('currentUser', JSON.stringify(updatedData));
             updateUserInfo();
+            updateAccountInfo();
             showNotification('Profile updated successfully!', 'success');
         }
 
         function updateAccountInfo() {
             if (!currentUser) return;
-            
             document.getElementById('profileName').textContent = currentUser.name;
             document.getElementById('profileEmail').textContent = currentUser.email;
             document.getElementById('updateName').value = currentUser.name;
             document.getElementById('updatePhone').value = currentUser.phone || '';
             document.getElementById('updateLocation').value = currentUser.location || '';
-            document.getElementById('memberSince').textContent = currentUser.memberSince || new Date().getFullYear();
+            document.getElementById('memberSince').textContent = currentUser.memberSince || new Date().toLocaleDateString();
+            const userProductCount = allProducts.filter(product => product.sellerId === currentUser.id).length;
+            document.getElementById('userProductCount').textContent = userProductCount;
         }
 
         function updateMarketStats() {
-            const totalProducts = allProducts.length;
-            const uniqueSellers = [...new Set(allProducts.map(p => p.sellerId))].length;
-            
-            document.getElementById('totalProducts').textContent = totalProducts;
-            document.getElementById('totalSellers').textContent = uniqueSellers;
+            document.getElementById('totalProducts').textContent = allProducts.length;
+            document.getElementById('totalSellers').textContent = [...new Set(allProducts.map(p => p.sellerId))].length;
         }
 
-        // Sample Data
         function loadSampleData() {
             const sampleProducts = [
                 {
@@ -1121,7 +954,7 @@
                     name: 'Fresh Organic Apples',
                     category: 'fruits',
                     quantity: 25,
-                    price: 4.99,
+                    price: 399,
                     image: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
                     description: 'Crisp and sweet organic apples, perfect for snacking or baking.',
                     sellerId: 'sample_seller_1',
@@ -1133,7 +966,7 @@
                     name: 'Fresh Carrots',
                     category: 'vegetables',
                     quantity: 15,
-                    price: 2.49,
+                    price: 199,
                     image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
                     description: 'Freshly harvested carrots, rich in vitamins and perfect for cooking.',
                     sellerId: 'sample_seller_2',
@@ -1145,7 +978,7 @@
                     name: 'Farm Fresh Tomatoes',
                     category: 'vegetables',
                     quantity: 30,
-                    price: 3.99,
+                    price: 299,
                     image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop',
                     description: 'Juicy vine-ripened tomatoes, perfect for salads and cooking.',
                     sellerId: 'sample_seller_3',
@@ -1153,14 +986,14 @@
                     dateAdded: new Date().toISOString()
                 }
             ];
-
             const existingProducts = JSON.parse(localStorage.getItem('allProducts')) || [];
-            if (existingProducts.length === 0) {
+            if (!existingProducts.length) {
                 localStorage.setItem('allProducts', JSON.stringify(sampleProducts));
                 allProducts = sampleProducts;
             } else {
                 allProducts = existingProducts;
             }
+            loadAllProducts();
         }
     </script>
 </body>
