@@ -2,999 +2,1405 @@
 <html lang="en">
 <head>
     <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
-    <title>Farmer Market - Premium Mobile App</title>
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>NotifyPro - Advanced Notification Manager</title>
     <link href="https://cdn.jsdelivr.net/npm/tailwindcss@2.2.19/dist/tailwind.min.css" rel="stylesheet">
     <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/@fortawesome/fontawesome-free@6.4.0/css/all.min.css">
-    <link href="https://fonts.googleapis.com/css2?family=Poppins:wght@300;400;500;600;700;800&display=swap" rel="stylesheet">
+    <meta name="theme-color" content="#3B82F6">
+    <meta name="mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-capable" content="yes">
+    <meta name="apple-mobile-web-app-status-bar-style" content="default">
+    <meta name="apple-mobile-web-app-title" content="NotifyPro">
+    <link rel="manifest" href="data:application/json,{
+        'name': 'NotifyPro',
+        'short_name': 'NotifyPro',
+        'description': 'Advanced Notification Manager',
+        'start_url': '/',
+        'display': 'standalone',
+        'background_color': '#ffffff',
+        'theme_color': '#3B82F6',
+        'icons': [
+            {
+                'src': 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMzQjgyRjYiLz4KPHBhdGggZD0iTTk2IDQ4QzExNC4zMjggNDggMTI5IDYyLjY3MiAxMjkgODFWMTA3QzEyOSAxMjUuMzI4IDExNC4zMjggMTQwIDk2IDE0MEg5NkM3Ny42NzIgMTQwIDYzIDEyNS4zMjggNjMgMTA3Vjg1QzYzIDcxLjc0NTIgNzMuNzQ1MiA2MSA4NyA2MUgxMDVDMTEwLjUyMyA2MSAxMTUgNjUuNDc3MiAxMTUgNzFWMTA3QzExNSAxMTIuNTIzIDExMC41MjMgMTE3IDEwNSAxMTdIODdDODQuMjM4NiAxMTcgODIgMTE0Ljc2MSA4MiAxMTJWODVDODIgODIuMjM4NiA4NC4yMzg2IDgwIDg3IDgwSDEwNSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+',
+                'sizes': '192x192',
+                'type': 'image/svg+xml'
+            }
+        ]
+    }">
     <style>
-        * {
-            font-family: 'Poppins', sans-serif;
-        }
-        .gradient-bg {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
-        }
-        .card-shadow {
-            box-shadow: 0 10px 25px rgba(0,0,0,0.1);
-        }
-        .btn-primary {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
+        .notification-card {
             transition: all 0.3s ease;
+            transform: translateX(0);
         }
-        .btn-primary:hover {
-            transform: translateY(-2px);
-            box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
+        .notification-card.slide-out {
+            transform: translateX(-100%);
+            opacity: 0;
         }
-        .product-card {
-            transition: all 0.3s ease;
-            border-radius: 15px;
-            overflow: hidden;
-        }
-        .product-card:hover {
-            transform: translateY(-5px);
-            box-shadow: 0 15px 30px rgba(0,0,0,0.15);
-        }
-        .bottom-nav {
-            background: rgba(255, 255, 255, 0.95);
-            backdrop-filter: blur(10px);
-            border-top: 1px solid rgba(0,0,0,0.1);
-        }
-        .nav-item {
-            transition: all 0.3s ease;
-        }
-        .nav-item.active {
-            color: #4CAF50;
-            transform: scale(1.1);
-        }
-        .floating-cart {
+        .floating-btn {
             position: fixed;
-            top: 20px;
+            bottom: 20px;
             right: 20px;
             z-index: 1000;
-            background: linear-gradient(45deg, #FF6B6B, #FF8E53);
-            border-radius: 50%;
-            width: 60px;
-            height: 60px;
+            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.3);
+        }
+        .modal {
+            display: none;
+            position: fixed;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            background-color: rgba(0, 0, 0, 0.5);
+            z-index: 2000;
+        }
+        .modal.active {
             display: flex;
             align-items: center;
             justify-content: center;
-            box-shadow: 0 5px 15px rgba(255, 107, 107, 0.4);
+        }
+        .screen {
+            display: none;
+        }
+        .screen.active {
+            display: block;
+        }
+        .tab-bar {
+            box-shadow: 0 -2px 10px rgba(0, 0, 0, 0.1);
+        }
+        .notification-icon {
             animation: pulse 2s infinite;
         }
         @keyframes pulse {
-            0% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0.7); }
-            70% { box-shadow: 0 0 0 10px rgba(255, 107, 107, 0); }
-            100% { box-shadow: 0 0 0 0 rgba(255, 107, 107, 0); }
+            0%, 100% { transform: scale(1); }
+            50% { transform: scale(1.05); }
         }
-        .input-field {
-            border-radius: 12px;
-            border: 2px solid #e2e8f0;
-            transition: all 0.3s ease;
-        }
-        .input-field:focus {
-            border-color: #4CAF50;
-            box-shadow: 0 0 0 3px rgba(76, 175, 80, 0.1);
-        }
-        .category-tag {
-            background: linear-gradient(45deg, #667eea, #764ba2);
+        .badge {
+            position: absolute;
+            top: -5px;
+            right: -5px;
+            background-color: #EF4444;
             color: white;
-            padding: 4px 12px;
-            border-radius: 20px;
-            font-size: 12px;
-            font-weight: 500;
-        }
-        .price-tag {
-            background: linear-gradient(45deg, #4CAF50, #45a049);
-            color: white;
-            padding: 8px 16px;
-            border-radius: 25px;
-            font-weight: 600;
-            font-size: 14px;
-        }
-        .loading-spinner {
-            border: 3px solid #f3f3f3;
-            border-top: 3px solid #4CAF50;
             border-radius: 50%;
-            width: 30px;
-            height: 30px;
-            animation: spin 1s linear infinite;
+            width: 20px;
+            height: 20px;
+            font-size: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
         }
-        @keyframes spin {
-            0% { transform: rotate(0deg); }
-            100% { transform: rotate(360deg); }
+        .category-color {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            display: inline-block;
+            margin-right: 8px;
         }
-        .notification {
-            position: fixed;
-            top: 20px;
-            left: 50%;
-            transform: translateX(-50%);
-            z-index: 2000;
-            padding: 12px 24px;
-            border-radius: 25px;
-            color: white;
-            font-weight: 500;
-            box-shadow: 0 5px 15px rgba(0,0,0,0.3);
-            animation: slideDown 0.5s ease;
+        .time-picker {
+            -webkit-appearance: none;
+            -moz-appearance: textfield;
         }
-        @keyframes slideDown {
-            from { transform: translate(-50%, -100%); opacity: 0; }
-            to { transform: translate(-50%, 0); opacity: 1; }
+        .switch {
+            position: relative;
+            display: inline-block;
+            width: 60px;
+            height: 34px;
         }
-        .success { background: linear-gradient(45deg, #4CAF50, #45a049); }
-        .error { background: linear-gradient(45deg, #f44336, #d32f2f); }
-        .header-gradient {
-            background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+        .switch input {
+            opacity: 0;
+            width: 0;
+            height: 0;
         }
-        .empty-state {
-            text-align: center;
-            color: #64748b;
-            padding: 40px 20px;
+        .slider {
+            position: absolute;
+            cursor: pointer;
+            top: 0;
+            left: 0;
+            right: 0;
+            bottom: 0;
+            background-color: #ccc;
+            transition: .4s;
+            border-radius: 34px;
         }
-        .empty-state i {
-            font-size: 4rem;
-            margin-bottom: 1rem;
-            color: #cbd5e1;
+        .slider:before {
+            position: absolute;
+            content: "";
+            height: 26px;
+            width: 26px;
+            left: 4px;
+            bottom: 4px;
+            background-color: white;
+            transition: .4s;
+            border-radius: 50%;
         }
-        .content-wrapper {
-            padding-top: 80px;
-            padding-bottom: 60px;
-            overflow-y: auto;
-            height: 100vh;
+        input:checked + .slider {
+            background-color: #3B82F6;
         }
-        .section {
-            padding: 1rem;
-        }
-        @media (max-width: 640px) {
-            .floating-cart {
-                top: auto;
-                bottom: 100px;
-                right: 20px;
-            }
+        input:checked + .slider:before {
+            transform: translateX(26px);
         }
     </style>
 </head>
-<body class="bg-gray-50">
-    <div id="loadingScreen" class="fixed inset-0 bg-white z-50 flex items-center justify-center">
-        <div class="text-center">
-            <div class="loading-spinner mx-auto mb-4"></div>
-            <h2 class="text-xl font-semibold text-gray-700">Loading Farmer Market...</h2>
-        </div>
-    </div>
-
-    <div id="notification" class="notification hidden"></div>
-
-    <div id="floatingCart" class="floating-cart cursor-pointer hidden" onclick="toggleCartModal()">
-        <i class="fas fa-shopping-cart text-white text-xl"></i>
-        <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">0</span>
-    </div>
-
-    <div id="authScreen" class="h-screen gradient-bg flex items-center justify-center p-4">
-        <div class="bg-white rounded-3xl p-8 w-full max-w-md card-shadow">
-            <div class="text-center mb-8">
-                <div class="w-20 h-20 bg-green-100 rounded-full flex items-center justify-center mx-auto mb-4">
-                    <i class="fas fa-seedling text-green-600 text-2xl"></i>
-                </div>
-                <h1 class="text-3xl font-bold text-gray-800 mb-2">Farmer Market</h1>
-                <p class="text-gray-600">Fresh from farm to your table</p>
-            </div>
-
-            <div id="loginForm">
-                <h2 class="text-2xl font-semibold mb-6 text-center">Welcome Back</h2>
-                <form id="loginFormElement" class="space-y-4">
-                    <div>
-                        <input type="email" id="loginEmail" placeholder="Email" required class="w-full p-4 input-field">
+<body class="bg-gray-50 min-h-screen">
+    <!-- Main App Container -->
+    <div id="app" class="max-w-md mx-auto bg-white min-h-screen relative">
+        
+        <!-- Header -->
+        <header class="bg-blue-600 text-white p-4 sticky top-0 z-10">
+            <div class="flex justify-between items-center">
+                <h1 class="text-xl font-bold">NotifyPro</h1>
+                <div class="flex items-center space-x-4">
+                    <div class="relative">
+                        <i class="fas fa-bell notification-icon text-xl"></i>
+                        <span id="notificationBadge" class="badge" style="display: none;">0</span>
                     </div>
-                    <div>
-                        <input type="password" id="loginPassword" placeholder="Password" required class="w-full p-4 input-field">
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold">
-                        <i class="fas fa-sign-in-alt mr-2"></i>Login
+                    <button id="settingsBtn" class="p-2 rounded-full hover:bg-blue-700">
+                        <i class="fas fa-cog"></i>
                     </button>
-                </form>
-                <p class="text-center mt-6 text-gray-600">
-                    Don't have an account? 
-                    <span id="showSignup" class="text-green-600 font-semibold cursor-pointer hover:underline">Sign up</span>
-                </p>
-            </div>
-
-            <div id="signupForm" class="hidden">
-                <h2 class="text-2xl font-semibold mb-6 text-center">Join Us</h2>
-                <form id="signupFormElement" class="space-y-4">
-                    <div>
-                        <input type="text" id="signupName" placeholder="Full Name" required class="w-full p-4 input-field">
-                    </div>
-                    <div>
-                        <input type="email" id="signupEmail" placeholder="Email" required class="w-full p-4 input-field">
-                    </div>
-                    <div>
-                        <input type="password" id="signupPassword" placeholder="Password" required class="w-full p-4 input-field">
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold">
-                        <i class="fas fa-user-plus mr-2"></i>Create Account
-                    </button>
-                </form>
-                <p class="text-center mt-6 text-gray-600">
-                    Already have an account? 
-                    <span id="showLogin" class="text-green-600 font-semibold cursor-pointer hover:underline">Login</span>
-                </p>
-            </div>
-        </div>
-    </div>
-
-    <div id="mainApp" class="hidden">
-        <header class="header-gradient text-white p-4 fixed top-0 left-0 right-0 z-40">
-            <div class="flex items-center justify-between">
-                <div class="flex items-center">
-                    <div class="w-12 h-12 bg-white bg-opacity-20 rounded-full flex items-center justify-center mr-3">
-                        <i class="fas fa-seedling text-white text-xl"></i>
-                    </div>
-                    <div>
-                        <h1 class="text-xl font-bold">Farmer Market</h1>
-                        <p class="text-sm opacity-90" id="userGreeting">Welcome back!</p>
-                    </div>
                 </div>
-                <button id="logoutBtn" class="bg-white bg-opacity-20 p-2 rounded-full hover:bg-opacity-30 transition-colors">
-                    <i class="fas fa-sign-out-alt"></i>
-                </button>
             </div>
         </header>
 
-        <div class="content-wrapper pt-20 pb-16">
-            <div id="homeSection" class="section p-4">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-home mr-2 text-green-600"></i>Market Fresh
-                    </h2>
-                    <p class="text-gray-600">Discover fresh products from local farmers</p>
+        <!-- Permission Alert -->
+        <div id="permissionAlert" class="bg-yellow-100 border-l-4 border-yellow-500 text-yellow-700 p-4 hidden">
+            <div class="flex">
+                <div class="flex-shrink-0">
+                    <i class="fas fa-exclamation-triangle"></i>
                 </div>
+                <div class="ml-3">
+                    <p class="text-sm">
+                        Notification permission required for full functionality.
+                        <button id="enableNotifications" class="font-medium underline">Enable now</button>
+                    </p>
+                </div>
+            </div>
+        </div>
 
-                <div class="mb-6">
-                    <div class="relative">
-                        <input type="text" id="searchInput" placeholder="Search products..." class="w-full p-4 pl-12 input-field">
-                        <i class="fas fa-search absolute left-4 top-1/2 transform -translate-y-1/2 text-gray-400"></i>
+        <!-- Home Screen -->
+        <div id="homeScreen" class="screen active pb-20">
+            <!-- Quick Stats -->
+            <div class="p-4 bg-gradient-to-r from-blue-500 to-purple-600 text-white">
+                <div class="grid grid-cols-3 gap-4">
+                    <div class="text-center">
+                        <div class="text-2xl font-bold" id="totalNotifications">0</div>
+                        <div class="text-sm opacity-80">Total</div>
                     </div>
-                </div>
-
-                <div class="mb-6">
-                    <div class="flex space-x-2 overflow-x-auto pb-2">
-                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-green-100 text-green-800 font-semibold" data-category="all">
-                            <i class="fas fa-th-large mr-1"></i>All
-                        </button>
-                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="fruits">
-                            <i class="fas fa-apple-alt mr-1"></i>Fruits
-                        </button>
-                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="vegetables">
-                            <i class="fas fa-carrot mr-1"></i>Vegetables
-                        </button>
-                        <button class="category-filter whitespace-nowrap px-4 py-2 rounded-full bg-gray-100 text-gray-600" data-category="others">
-                            <i class="fas fa-leaf mr-1"></i>Others
-                        </button>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold" id="activeNotifications">0</div>
+                        <div class="text-sm opacity-80">Active</div>
                     </div>
-                </div>
-
-                <div id="productsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-                <div id="emptyState" class="empty-state hidden">
-                    <i class="fas fa-seedling"></i>
-                    <h3 class="text-xl font-semibold mb-2">No products yet</h3>
-                    <p class="mb-4">Be the first to add a product to the marketplace!</p>
-                    <button class="btn-primary text-white px-6 py-3 rounded-xl" onclick="switchTab('sell')">
-                        <i class="fas fa-plus mr-2"></i>Add Product
-                    </button>
+                    <div class="text-center">
+                        <div class="text-2xl font-bold" id="scheduledNotifications">0</div>
+                        <div class="text-sm opacity-80">Scheduled</div>
+                    </div>
                 </div>
             </div>
 
-            <div id="sellSection" class="section p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-store mr-2 text-green-600"></i>Sell Products
-                    </h2>
-                    <p class="text-gray-600">Add your fresh products to the marketplace</p>
-                </div>
-
-                <form id="sellForm" class="space-y-6">
-                    <div class="bg-white rounded-2xl p-6 card-shadow">
-                        <h3 class="text-lg font-semibold mb-4 text-gray-800">Product Details</h3>
-                        <div class="space-y-4">
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Product Name</label>
-                                <input type="text" id="productName" placeholder="e.g., Fresh Organic Apples" required class="w-full p-4 input-field">
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Category</label>
-                                <select id="productCategory" required class="w-full p-4 input-field">
-                                    <option value="">Select Category</option>
-                                    <option value="fruits">🍎 Fruits</option>
-                                    <option value="vegetables">🥕 Vegetables</option>
-                                    <option value="others">🌿 Others</option>
-                                </select>
-                            </div>
-                            <div class="grid grid-cols-2 gap-4">
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Quantity (kg)</label>
-                                    <input type="number" id="productQuantity" placeholder="10" min="0.1" step="0.1" required class="w-full p-4 input-field">
-                                </div>
-                                <div>
-                                    <label class="block text-sm font-medium text-gray-700 mb-2">Price per kg (₹)</label>
-                                    <input type="number" id="productPrice" placeholder="399" min="0.01" step="0.01" required class="w-full p-4 input-field">
-                                </div>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Product Image</label>
-                                <input type="file" id="productImage" accept="image/*" class="w-full p-4 input-field">
-                                <p class="text-sm text-gray-500 mt-1">Optional: Upload an image for your product</p>
-                            </div>
-                            <div>
-                                <label class="block text-sm font-medium text-gray-700 mb-2">Description</label>
-                                <textarea id="productDescription" placeholder="Describe your product..." rows="3" class="w-full p-4 input-field resize-none"></textarea>
-                            </div>
-                        </div>
-                    </div>
-                    <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold text-lg">
-                        <i class="fas fa-plus-circle mr-2"></i>Add Product to Market
-                    </button>
-                </form>
-
-                <div class="mt-8">
-                    <h3 class="text-xl font-semibold mb-4 text-gray-800">
-                        <i class="fas fa-box mr-2 text-green-600"></i>My Products
-                    </h3>
-                    <div id="myProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+            <!-- Recent Notifications -->
+            <div class="p-4">
+                <h2 class="text-lg font-semibold mb-3">Recent Notifications</h2>
+                <div id="recentNotifications" class="space-y-3">
+                    <!-- Recent notifications will be populated here -->
                 </div>
             </div>
 
-            <div id="marketSection" class="section p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-shopping-basket mr-2 text-green-600"></i>Marketplace
-                    </h2>
-                    <p class="text-gray-600">Browse all available products</p>
-                </div>
-
-                <div class="grid grid-cols-3 gap-4 mb-6">
-                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                        <i class="fas fa-boxes text-blue-500 text-2xl mb-2"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="totalProducts">0</p>
-                        <p class="text-sm text-gray-600">Products</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                        <i class="fas fa-users text-green-500 text-2xl mb-2"></i>
-                        <p class="text-2xl font-bold text-gray-800" id="totalSellers">0</p>
-                        <p class="text-sm text-gray-600">Sellers</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                        <i class="fas fa-star text-yellow-500 text-2xl mb-2"></i>
-                        <p class="text-2xl font-bold text-gray-800">4.8</p>
-                        <p class="text-sm text-gray-600">Rating</p>
-                    </div>
-                </div>
-
-                <div id="marketProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
-            </div>
-
-            <div id="accountSection" class="section p-4 hidden">
-                <div class="mb-6">
-                    <h2 class="text-2xl font-bold text-gray-800 mb-2">
-                        <i class="fas fa-user-circle mr-2 text-green-600"></i>My Account
-                    </h2>
-                    <p class="text-gray-600">Manage your profile and settings</p>
-                </div>
-
-                <div class="bg-white rounded-2xl p-6 card-shadow mb-6">
-                    <div class="text-center mb-6">
-                        <div class="w-24 h-24 bg-gradient-to-r from-green-400 to-green-600 rounded-full flex items-center justify-center mx-auto mb-4">
-                            <i class="fas fa-user text-white text-3xl"></i>
-                        </div>
-                        <h3 class="text-xl font-semibold text-gray-800" id="profileName">User Name</h3>
-                        <p class="text-gray-600" id="profileEmail">user@email.com</p>
-                    </div>
-
-                    <form id="profileForm" class="space-y-4">
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Full Name</label>
-                            <input type="text" id="updateName" required class="w-full p-4 input-field">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Phone (Optional)</label>
-                            <input type="tel" id="updatePhone" class="w-full p-4 input-field">
-                        </div>
-                        <div>
-                            <label class="block text-sm font-medium text-gray-700 mb-2">Location (Optional)</label>
-                            <input type="text" id="updateLocation" placeholder="City, State" class="w-full p-4 input-field">
-                        </div>
-                        <button type="submit" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
-                            <i class="fas fa-save mr-2"></i>Update Profile
-                        </button>
-                    </form>
-                </div>
-
-                <div class="grid grid-cols-2 gap-4 mb-6">
-                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                        <i class="fas fa-box text-blue-500 text-xl mb-2"></i>
-                        <p class="text-lg font-bold text-gray-800" id="userProductCount">0</p>
-                        <p class="text-sm text-gray-600">Products Listed</p>
-                    </div>
-                    <div class="bg-white rounded-xl p-4 text-center card-shadow">
-                        <i class="fas fa-calendar text-green-500 text-xl mb-2"></i>
-                        <p class="text-lg font-bold text-gray-800" id="memberSince">2024</p>
-                        <p class="text-sm text-gray-600">Member Since</p>
-                    </div>
-                </div>
-
-                <div class="space-y-3">
-                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-bell mr-3 text-yellow-500"></i>Notification Settings
+            <!-- Quick Actions -->
+            <div class="p-4">
+                <h2 class="text-lg font-semibold mb-3">Quick Actions</h2>
+                <div class="grid grid-cols-2 gap-3">
+                    <button id="quickReminderBtn" class="bg-blue-500 hover:bg-blue-600 text-white p-4 rounded-lg flex flex-col items-center">
+                        <i class="fas fa-clock text-2xl mb-2"></i>
+                        <span>Quick Reminder</span>
                     </button>
-                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-shield-alt mr-3 text-blue-500"></i>Privacy & Security
-                    </button>
-                    <button class="w-full bg-white text-gray-700 py-4 rounded-xl font-semibold flex items-center justify-center card-shadow hover:bg-gray-50 transition-colors">
-                        <i class="fas fa-question-circle mr-3 text-purple-500"></i>Help & Support
+                    <button id="testNotificationBtn" class="bg-green-500 hover:bg-green-600 text-white p-4 rounded-lg flex flex-col items-center">
+                        <i class="fas fa-bell text-2xl mb-2"></i>
+                        <span>Test Notification</span>
                     </button>
                 </div>
             </div>
         </div>
 
-        <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end sm:items-center justify-center">
-            <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto">
-                <div class="p-6">
-                    <div class="flex justify-between items-center mb-4">
-                        <h3 class="text-xl font-semibold">Shopping Cart</h3>
-                        <button id="closeCartModal" class="text-gray-500 hover:text-gray-700">
-                            <i class="fas fa-times text-xl"></i>
-                        </button>
-                    </div>
-                    <div id="cartItems" class="space-y-3 mb-6"></div>
-                    <div class="border-t pt-4">
-                        <div class="flex justify-between items-center mb-4">
-                            <span class="text-lg font-semibold">Total:</span>
-                            <span class="text-xl font-bold text-green-600" id="cartTotal">₹0.00</span>
+        <!-- Notifications Screen -->
+        <div id="notificationsScreen" class="screen pb-20">
+            <!-- Filter Bar -->
+            <div class="p-4 bg-gray-100 border-b">
+                <div class="flex space-x-2">
+                    <select id="categoryFilter" class="flex-1 p-2 border rounded">
+                        <option value="">All Categories</option>
+                    </select>
+                    <select id="statusFilter" class="flex-1 p-2 border rounded">
+                        <option value="">All Status</option>
+                        <option value="active">Active</option>
+                        <option value="completed">Completed</option>
+                        <option value="scheduled">Scheduled</option>
+                    </select>
+                </div>
+            </div>
+
+            <!-- Notifications List -->
+            <div id="notificationsList" class="p-4">
+                <!-- Notifications will be populated here -->
+            </div>
+        </div>
+
+        <!-- Settings Screen -->
+        <div id="settingsScreen" class="screen pb-20">
+            <div class="p-4 space-y-6">
+                <!-- General Settings -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-3">General Settings</h2>
+                    <div class="space-y-4">
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-medium">Enable Notifications</label>
+                            <label class="switch">
+                                <input type="checkbox" id="notificationToggle" checked>
+                                <span class="slider"></span>
+                            </label>
                         </div>
-                        <button id="checkoutBtn" class="w-full btn-primary text-white py-3 rounded-xl font-semibold">
-                            <i class="fas fa-credit-card mr-2"></i>Checkout
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-medium">Sound Notifications</label>
+                            <label class="switch">
+                                <input type="checkbox" id="soundToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                        <div class="flex justify-between items-center">
+                            <label class="text-sm font-medium">Vibration</label>
+                            <label class="switch">
+                                <input type="checkbox" id="vibrationToggle" checked>
+                                <span class="slider"></span>
+                            </label>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Default Settings -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-3">Default Settings</h2>
+                    <div class="space-y-4">
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Default Category</label>
+                            <select id="defaultCategory" class="w-full p-2 border rounded">
+                                <option value="general">General</option>
+                            </select>
+                        </div>
+                        <div>
+                            <label class="block text-sm font-medium mb-2">Default Reminder Time</label>
+                            <select id="defaultReminderTime" class="w-full p-2 border rounded">
+                                <option value="5">5 minutes</option>
+                                <option value="15">15 minutes</option>
+                                <option value="30">30 minutes</option>
+                                <option value="60">1 hour</option>
+                                <option value="1440">1 day</option>
+                            </select>
+                        </div>
+                    </div>
+                </div>
+
+                <!-- Categories Management -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-3">Categories</h2>
+                    <div id="categoriesList" class="space-y-2 mb-4">
+                        <!-- Categories will be populated here -->
+                    </div>
+                    <button id="addCategoryBtn" class="w-full bg-blue-500 hover:bg-blue-600 text-white p-3 rounded">
+                        <i class="fas fa-plus mr-2"></i>Add Category
+                    </button>
+                </div>
+
+                <!-- Data Management -->
+                <div>
+                    <h2 class="text-lg font-semibold mb-3">Data Management</h2>
+                    <div class="space-y-2">
+                        <button id="exportDataBtn" class="w-full bg-green-500 hover:bg-green-600 text-white p-3 rounded">
+                            <i class="fas fa-download mr-2"></i>Export Data
+                        </button>
+                        <button id="importDataBtn" class="w-full bg-yellow-500 hover:bg-yellow-600 text-white p-3 rounded">
+                            <i class="fas fa-upload mr-2"></i>Import Data
+                        </button>
+                        <button id="clearDataBtn" class="w-full bg-red-500 hover:bg-red-600 text-white p-3 rounded">
+                            <i class="fas fa-trash mr-2"></i>Clear All Data
                         </button>
                     </div>
                 </div>
             </div>
         </div>
 
-        <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-40">
-            <div class="flex justify-around py-3">
-                <button class="nav-item active flex flex-col items-center p-2" data-tab="home">
-                    <i class="fas fa-home text-xl mb-1"></i>
-                    <span class="text-xs font-medium">Home</span>
-                </button>
-                <button class="nav-item flex flex-col items-center p-2" data-tab="sell">
-                    <i class="fas fa-plus-circle text-xl mb-1"></i>
-                    <span class="text-xs font-medium">Sell</span>
-                </button>
-                <button class="nav-item flex flex-col items-center p-2" data-tab="market">
-                    <i class="fas fa-shopping-basket text-xl mb-1"></i>
-                    <span class="text-xs font-medium">Market</span>
-                </button>
-                <button class="nav-item flex flex-col items-center p-2" data-tab="account">
-                    <i class="fas fa-user-circle text-xl mb-1"></i>
-                    <span class="text-xs font-medium">Account</span>
-                </button>
-            </div>
-        </nav>
-    </div>
-
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
-
-    <script>
-        const firebaseConfig = {
-            apiKey: "AIzaSyDixufxD2KlUSPgqPIJQNatpQ0XEnpTouA",
-            authDomain: "lumilearn-df84e.firebaseapp.com",
-            databaseURL: "https://lumilearn-df84e-default-rtdb.firebaseio.com",
-            projectId: "lumilearn-df84e",
-            storageBucket: "lumilearn-df84e.appspot.com",
-            messagingSenderId: "972914519676",
-            appId: "1:972914519676:web:8c4c2a47beb1864954e3f9",
-            measurementId: "G-4LZM3VLSSS"
-        };
-
-        firebase.initializeApp(firebaseConfig);
-        const auth = firebase.auth();
-        const db = firebase.firestore();
-
-        let currentUser = null;
-        let allProducts = [];
-        let userProducts = [];
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
-        let currentTab = 'home';
-
-        const authScreen = document.getElementById('authScreen');
-        const mainApp = document.getElementById('mainApp');
-        const loadingScreen = document.getElementById('loadingScreen');
-        const notification = document.getElementById('notification');
-
-        document.addEventListener('DOMContentLoaded', function() {
-            setTimeout(() => {
-                loadingScreen.style.display = 'none';
-                checkAuthState();
-            }, 2000);
-            setupEventListeners();
-            loadSampleData();
-            updateCartUI();
-        });
-
-        function checkAuthState() {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            } else {
-                showAuthScreen();
-            }
-        }
-
-        function showAuthScreen() {
-            authScreen.classList.remove('hidden');
-            mainApp.classList.add('hidden');
-        }
-
-        function showMainApp() {
-            authScreen.classList.add('hidden');
-            mainApp.classList.remove('hidden');
-            updateUserInfo();
-            loadAllProducts();
-            switchTab(currentTab);
-        }
-
-        function setupEventListeners() {
-            document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
-            document.getElementById('signupFormElement').addEventListener('submit', handleSignup);
-            document.getElementById('showSignup').addEventListener('click', showSignupForm);
-            document.getElementById('showLogin').addEventListener('click', showLoginForm);
-            document.querySelectorAll('.nav-item').forEach(item => {
-                item.addEventListener('click', (e) => switchTab(e.currentTarget.dataset.tab));
-            });
-            document.getElementById('sellForm').addEventListener('submit', handleAddProduct);
-            document.getElementById('profileForm').addEventListener('submit', handleUpdateProfile);
-            document.getElementById('searchInput').addEventListener('input', handleSearch);
-            document.querySelectorAll('.category-filter').forEach(btn => {
-                btn.addEventListener('click', (e) => {
-                    const category = e.currentTarget.dataset.category;
-                    filterProducts(category);
-                    updateFilterButtons(e.currentTarget);
-                });
-            });
-            document.getElementById('closeCartModal').addEventListener('click', toggleCartModal);
-            document.getElementById('checkoutBtn').addEventListener('click', handleCheckout);
-            document.getElementById('logoutBtn').addEventListener('click', handleLogout);
-        }
-
-        async function handleLogin(e) {
-            e.preventDefault();
-            const email = document.getElementById('loginEmail').value.trim();
-            const password = document.getElementById('loginPassword').value;
-            if (!email || !password) {
-                showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            try {
-                const userData = {
-                    email: email,
-                    name: email.split('@')[0],
-                    id: 'user_' + Date.now()
-                };
-                currentUser = userData;
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                showNotification('Login successful!', 'success');
-                showMainApp();
-            } catch (error) {
-                showNotification('Login failed. Please try again.', 'error');
-            }
-        }
-
-        async function handleSignup(e) {
-            e.preventDefault();
-            const name = document.getElementById('signupName').value.trim();
-            const email = document.getElementById('signupEmail').value.trim();
-            const password = document.getElementById('signupPassword').value;
-            if (!name || !email || !password) {
-                showNotification('Please fill in all fields', 'error');
-                return;
-            }
-            try {
-                const userData = {
-                    email: email,
-                    name: name,
-                    id: 'user_' + Date.now(),
-                    memberSince: new Date().toLocaleDateString()
-                };
-                currentUser = userData;
-                localStorage.setItem('currentUser', JSON.stringify(userData));
-                showNotification('Account created successfully!', 'success');
-                showMainApp();
-            } catch (error) {
-                showNotification('Signup failed. Please try again.', 'error');
-            }
-        }
-
-        function showSignupForm() {
-            document.getElementById('loginForm').classList.add('hidden');
-            document.getElementById('signupForm').classList.remove('hidden');
-        }
-
-        function showLoginForm() {
-            document.getElementById('signupForm').classList.add('hidden');
-            document.getElementById('loginForm').classList.remove('hidden');
-        }
-
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('cart');
-            currentUser = null;
-            cart = [];
-            showNotification('Logged out successfully!', 'success');
-            showAuthScreen();
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
-            document.getElementById(tab + 'Section').classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            currentTab = tab;
-            if (tab === 'market') updateMarketStats();
-            else if (tab === 'sell') loadUserProducts();
-            else if (tab === 'account') updateAccountInfo();
-            document.querySelector('.content-wrapper').scrollTop = 0;
-        }
-
-        function updateUserInfo() {
-            if (currentUser) {
-                document.getElementById('userGreeting').textContent = `Welcome, ${currentUser.name}!`;
-            }
-        }
-
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.remove('hidden');
-            setTimeout(() => notification.classList.add('hidden'), 3000);
-        }
-
-        async function handleAddProduct(e) {
-            e.preventDefault();
-            const productName = document.getElementById('productName').value.trim();
-            const productCategory = document.getElementById('productCategory').value;
-            const productQuantity = parseFloat(document.getElementById('productQuantity').value);
-            const productPrice = parseFloat(document.getElementById('productPrice').value);
-            const productDescription = document.getElementById('productDescription').value.trim();
-            const productImageFile = document.getElementById('productImage').files[0];
-
-            if (!productName || !productCategory || !productQuantity || !productPrice) {
-                showNotification('Please fill in all required fields', 'error');
-                return;
-            }
-
-            let imageUrl = productImageFile ? await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (event) => resolve(event.target.result);
-                reader.readAsDataURL(productImageFile);
-            }).catch(() => {
-                showNotification('Failed to upload image', 'error');
-                return getDefaultImage(productCategory);
-            }) : getDefaultImage(productCategory);
-
-            const productData = {
-                id: 'product_' + Date.now(),
-                name: productName,
-                category: productCategory,
-                quantity: productQuantity,
-                price: productPrice,
-                image: imageUrl,
-                description: productDescription,
-                sellerId: currentUser.id,
-                sellerName: currentUser.name,
-                dateAdded: new Date().toISOString()
-            };
-
-            try {
-                let products = JSON.parse(localStorage.getItem('allProducts')) || [];
-                products.push(productData);
-                localStorage.setItem('allProducts', JSON.stringify(products));
-                allProducts = products;
-                showNotification('Product added successfully!', 'success');
-                document.getElementById('sellForm').reset();
-                loadAllProducts();
-                loadUserProducts();
-            } catch (error) {
-                showNotification('Failed to add product', 'error');
-            }
-        }
-
-        function loadAllProducts() {
-            const savedProducts = localStorage.getItem('allProducts');
-            allProducts = savedProducts ? JSON.parse(savedProducts) : [];
-            displayProducts(allProducts, 'productsGrid');
-            displayProducts(allProducts, 'marketProductsGrid');
-            const emptyState = document.getElementById('emptyState');
-            if (allProducts.length === 0) {
-                emptyState.classList.remove('hidden');
-                document.getElementById('productsGrid').classList.add('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                document.getElementById('productsGrid').classList.remove('hidden');
-            }
-        }
-
-        function loadUserProducts() {
-            if (!currentUser) return;
-            userProducts = allProducts.filter(product => product.sellerId === currentUser.id);
-            displayProducts(userProducts, 'myProductsGrid');
-        }
-
-        function displayProducts(products, containerId) {
-            const container = document.getElementById(containerId);
-            if (!container) return;
-            if (!products || products.length === 0) {
-                container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No products found</div>';
-                return;
-            }
-            container.innerHTML = products.map(product => {
-                const isOwnProduct = currentUser && product.sellerId === currentUser.id;
-                const addButton = isOwnProduct && containerId === 'productsGrid' ? '' : 
-                    `<button onclick="addToCart('${product.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors">
-                        <i class="fas fa-cart-plus mr-1"></i>Add
-                    </button>`;
-                return `
-                    <div class="product-card bg-white rounded-2xl overflow-hidden card-shadow">
-                        <div class="relative">
-                            <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" onerror="this.src='${getDefaultImage(product.category)}'">
-                            <div class="absolute top-3 left-3">
-                                <span class="category-tag">${getCategoryIcon(product.category)} ${product.category}</span>
-                            </div>
-                        </div>
-                        <div class="p-4">
-                            <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
-                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description || 'Fresh and organic produce'}</p>
-                            <div class="flex items-center justify-between mb-3">
-                                <div class="price-tag">₹${product.price}/kg</div>
-                                <span class="text-sm text-gray-500"><i class="fas fa-weight mr-1"></i>${product.quantity}kg available</span>
-                            </div>
-                            <div class="flex items-center justify-between">
-                                <div class="text-xs text-gray-500"><i class="fas fa-user mr-1"></i>by ${product.sellerName}</div>
-                                ${addButton}
-                            </div>
-                        </div>
-                    </div>
-                `;
-            }).join('');
-        }
-
-        function getDefaultImage(category) {
-            const images = {
-                fruits: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
-                vegetables: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
-                others: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
-            };
-            return images[category] || images.others;
-        }
-
-        function getCategoryIcon(category) {
-            const icons = { fruits: '🍎', vegetables: '🥕', others: '🌿' };
-            return icons[category] || '🌿';
-        }
-
-        function handleSearch(e) {
-            const query = e.target.value.toLowerCase().trim();
-            const filtered = allProducts.filter(product =>
-                product.name.toLowerCase().includes(query) ||
-                (product.description && product.description.toLowerCase().includes(query)) ||
-                product.category.toLowerCase().includes(query)
-            );
-            displayProducts(filtered, 'productsGrid');
-        }
-
-        function filterProducts(category) {
-            const filtered = category === 'all' ? allProducts : allProducts.filter(product => product.category === category);
-            displayProducts(filtered, 'productsGrid');
-        }
-
-        function updateFilterButtons(activeBtn) {
-            document.querySelectorAll('.category-filter').forEach(btn => {
-                btn.classList.remove('bg-green-100', 'text-green-800');
-                btn.classList.add('bg-gray-100', 'text-gray-600');
-            });
-            activeBtn.classList.remove('bg-gray-100', 'text-gray-600');
-            activeBtn.classList.add('bg-green-100', 'text-green-800');
-        }
-
-        function addToCart(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                if (existingItem.quantity < product.quantity) existingItem.quantity += 1;
-                else {
-                    showNotification('Maximum quantity reached', 'error');
-                    return;
-                }
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            showNotification(`${product.name} added to cart!`, 'success');
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            displayCartItems();
-        }
-
-        function updateCartQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
-            if (!item) return;
-            const product = allProducts.find(p => p.id === productId);
-            if (change > 0 && item.quantity >= product.quantity) {
-                showNotification('Maximum quantity reached', 'error');
-                return;
-            }
-            item.quantity += change;
-            if (item.quantity <= 0) removeFromCart(productId);
-            else {
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartUI();
-                displayCartItems();
-            }
-        }
-
-        function updateCartUI() {
-            const cartBadge = document.getElementById('cartBadge');
-            const floatingCart = document.getElementById('floatingCart');
-            const cartTotal = document.getElementById('cartTotal');
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartBadge.textContent = totalItems;
-            cartTotal.textContent = `₹${totalPrice.toFixed(2)}`;
-            floatingCart.classList.toggle('hidden', totalItems === 0);
-        }
-
-        function toggleCartModal() {
-            const modal = document.getElementById('cartModal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) displayCartItems();
-        }
-
-        function displayCartItems() {
-            const container = document.getElementById('cartItems');
-            if (!cart.length) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-shopping-cart text-4xl mb-3"></i>
-                        <p>Your cart is empty</p>
-                    </div>`;
-                return;
-            }
-            container.innerHTML = cart.map(item => `
-                <div class="flex items-center space-x-3 bg-gray-50 rounded-xl p-3">
-                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h4 class="font-semibold text-gray-800">${item.name}</h4>
-                        <p class="text-sm text-gray-600">₹${item.price}/kg</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button onclick="updateCartQuantity('${item.id}', -1)" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                            <i class="fas fa-minus text-sm"></i>
-                        </button>
-                        <span class="w-8 text-center font-semibold">${item.quantity}</span>
-                        <button onclick="updateCartQuantity('${item.id}', 1)" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center">
-                            <i class="fas fa-plus text-sm"></i>
-                        </button>
-                    </div>
-                    <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700">
+        <!-- History Screen -->
+        <div id="historyScreen" class="screen pb-20">
+            <div class="p-4">
+                <div class="flex justify-between items-center mb-4">
+                    <h2 class="text-lg font-semibold">Notification History</h2>
+                    <button id="clearHistoryBtn" class="text-red-500 hover:text-red-700">
                         <i class="fas fa-trash"></i>
                     </button>
                 </div>
-            `).join('');
-        }
+                <div id="historyList" class="space-y-3">
+                    <!-- History items will be populated here -->
+                </div>
+            </div>
+        </div>
 
-        function handleCheckout() {
-            if (!cart.length) {
-                showNotification('Your cart is empty!', 'error');
-                return;
+        <!-- Floating Action Button -->
+        <button id="fabBtn" class="floating-btn bg-blue-600 hover:bg-blue-700 text-white w-14 h-14 rounded-full flex items-center justify-center">
+            <i class="fas fa-plus text-xl"></i>
+        </button>
+
+        <!-- Bottom Tab Bar -->
+        <div class="tab-bar fixed bottom-0 left-0 right-0 bg-white border-t max-w-md mx-auto">
+            <div class="flex">
+                <button class="tab-btn flex-1 py-3 px-4 text-center active" data-screen="homeScreen">
+                    <i class="fas fa-home block mb-1"></i>
+                    <span class="text-xs">Home</span>
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center" data-screen="notificationsScreen">
+                    <i class="fas fa-bell block mb-1"></i>
+                    <span class="text-xs">Notifications</span>
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center" data-screen="historyScreen">
+                    <i class="fas fa-history block mb-1"></i>
+                    <span class="text-xs">History</span>
+                </button>
+                <button class="tab-btn flex-1 py-3 px-4 text-center" data-screen="settingsScreen">
+                    <i class="fas fa-cog block mb-1"></i>
+                    <span class="text-xs">Settings</span>
+                </button>
+            </div>
+        </div>
+    </div>
+
+    <!-- Create Notification Modal -->
+    <div id="createNotificationModal" class="modal">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Create Notification</h3>
+                <button id="closeCreateModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="createNotificationForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Title</label>
+                    <input type="text" id="notificationTitle" class="w-full p-2 border rounded" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Message</label>
+                    <textarea id="notificationMessage" class="w-full p-2 border rounded" rows="3" required></textarea>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Category</label>
+                    <select id="notificationCategory" class="w-full p-2 border rounded">
+                        <option value="general">General</option>
+                    </select>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Schedule Type</label>
+                    <select id="scheduleType" class="w-full p-2 border rounded">
+                        <option value="now">Send Now</option>
+                        <option value="scheduled">Schedule for Later</option>
+                        <option value="recurring">Recurring</option>
+                    </select>
+                </div>
+                
+                <div id="scheduleOptions" class="space-y-4" style="display: none;">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Date</label>
+                        <input type="date" id="scheduleDate" class="w-full p-2 border rounded">
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Time</label>
+                        <input type="time" id="scheduleTime" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                
+                <div id="recurringOptions" class="space-y-4" style="display: none;">
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Repeat</label>
+                        <select id="recurringType" class="w-full p-2 border rounded">
+                            <option value="daily">Daily</option>
+                            <option value="weekly">Weekly</option>
+                            <option value="monthly">Monthly</option>
+                        </select>
+                    </div>
+                    
+                    <div>
+                        <label class="block text-sm font-medium mb-2">Start Time</label>
+                        <input type="time" id="recurringTime" class="w-full p-2 border rounded">
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" id="cancelCreateModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 p-3 rounded">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded">
+                        Create
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Category Modal -->
+    <div id="categoryModal" class="modal">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Add Category</h3>
+                <button id="closeCategoryModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="categoryForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Category Name</label>
+                    <input type="text" id="categoryName" class="w-full p-2 border rounded" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Color</label>
+                    <div class="grid grid-cols-6 gap-2">
+                        <div class="w-10 h-10 bg-red-500 rounded-full cursor-pointer category-color-option" data-color="#EF4444"></div>
+                        <div class="w-10 h-10 bg-blue-500 rounded-full cursor-pointer category-color-option" data-color="#3B82F6"></div>
+                        <div class="w-10 h-10 bg-green-500 rounded-full cursor-pointer category-color-option" data-color="#10B981"></div>
+                        <div class="w-10 h-10 bg-yellow-500 rounded-full cursor-pointer category-color-option" data-color="#F59E0B"></div>
+                        <div class="w-10 h-10 bg-purple-500 rounded-full cursor-pointer category-color-option" data-color="#8B5CF6"></div>
+                        <div class="w-10 h-10 bg-pink-500 rounded-full cursor-pointer category-color-option" data-color="#EC4899"></div>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" id="cancelCategoryModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 p-3 rounded">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded">
+                        Add
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <!-- Quick Reminder Modal -->
+    <div id="quickReminderModal" class="modal">
+        <div class="bg-white rounded-lg p-6 w-full max-w-md mx-4">
+            <div class="flex justify-between items-center mb-4">
+                <h3 class="text-lg font-semibold">Quick Reminder</h3>
+                <button id="closeQuickReminderModal" class="text-gray-500 hover:text-gray-700">
+                    <i class="fas fa-times"></i>
+                </button>
+            </div>
+            
+            <form id="quickReminderForm" class="space-y-4">
+                <div>
+                    <label class="block text-sm font-medium mb-2">Reminder Text</label>
+                    <input type="text" id="quickReminderText" class="w-full p-2 border rounded" placeholder="What do you want to be reminded of?" required>
+                </div>
+                
+                <div>
+                    <label class="block text-sm font-medium mb-2">Remind me in:</label>
+                    <div class="grid grid-cols-2 gap-2">
+                        <button type="button" class="quick-time-btn bg-gray-200 hover:bg-gray-300 p-3 rounded" data-minutes="5">5 minutes</button>
+                        <button type="button" class="quick-time-btn bg-gray-200 hover:bg-gray-300 p-3 rounded" data-minutes="15">15 minutes</button>
+                        <button type="button" class="quick-time-btn bg-gray-200 hover:bg-gray-300 p-3 rounded" data-minutes="30">30 minutes</button>
+                        <button type="button" class="quick-time-btn bg-gray-200 hover:bg-gray-300 p-3 rounded" data-minutes="60">1 hour</button>
+                    </div>
+                </div>
+                
+                <div class="flex space-x-3">
+                    <button type="button" id="cancelQuickReminderModal" class="flex-1 bg-gray-300 hover:bg-gray-400 text-gray-800 p-3 rounded">
+                        Cancel
+                    </button>
+                    <button type="submit" class="flex-1 bg-blue-600 hover:bg-blue-700 text-white p-3 rounded">
+                        Set Reminder
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+
+    <script>
+        // App State Management
+        class NotificationApp {
+            constructor() {
+                this.notifications = JSON.parse(localStorage.getItem('notifications')) || [];
+                this.categories = JSON.parse(localStorage.getItem('categories')) || [
+                    { id: 'general', name: 'General', color: '#3B82F6' },
+                    { id: 'work', name: 'Work', color: '#10B981' },
+                    { id: 'personal', name: 'Personal', color: '#F59E0B' },
+                    { id: 'health', name: 'Health', color: '#EF4444' }
+                ];
+                this.settings = JSON.parse(localStorage.getItem('settings')) || {
+                    notificationsEnabled: true,
+                    soundEnabled: true,
+                    vibrationEnabled: true,
+                    defaultCategory: 'general',
+                    defaultReminderTime: 15
+                };
+                this.history = JSON.parse(localStorage.getItem('history')) || [];
+                this.currentScreen = 'homeScreen';
+                this.scheduledNotifications = new Map();
+                this.init();
             }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            showNotification(`Order placed successfully! Total: ₹${total.toFixed(2)}`, 'success');
-            cart = [];
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            toggleCartModal();
-        }
 
-        function handleUpdateProfile(e) {
-            e.preventDefault();
-            const name = document.getElementById('updateName').value.trim();
-            if (!name) {
-                showNotification('Name is required', 'error');
-                return;
+            init() {
+                this.registerServiceWorker();
+                this.requestNotificationPermission();
+                this.setupEventListeners();
+                this.updateUI();
+                this.restoreScheduledNotifications();
             }
-            const updatedData = {
-                ...currentUser,
-                name: name,
-                phone: document.getElementById('updatePhone').value.trim(),
-                location: document.getElementById('updateLocation').value.trim()
-            };
-            currentUser = updatedData;
-            localStorage.setItem('currentUser', JSON.stringify(updatedData));
-            updateUserInfo();
-            updateAccountInfo();
-            showNotification('Profile updated successfully!', 'success');
-        }
 
-        function updateAccountInfo() {
-            if (!currentUser) return;
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('updateName').value = currentUser.name;
-            document.getElementById('updatePhone').value = currentUser.phone || '';
-            document.getElementById('updateLocation').value = currentUser.location || '';
-            document.getElementById('memberSince').textContent = currentUser.memberSince || new Date().toLocaleDateString();
-            const userProductCount = allProducts.filter(product => product.sellerId === currentUser.id).length;
-            document.getElementById('userProductCount').textContent = userProductCount;
-        }
-
-        function updateMarketStats() {
-            document.getElementById('totalProducts').textContent = allProducts.length;
-            document.getElementById('totalSellers').textContent = [...new Set(allProducts.map(p => p.sellerId))].length;
-        }
-
-        function loadSampleData() {
-            const sampleProducts = [
-                {
-                    id: 'sample_1',
-                    name: 'Fresh Organic Apples',
-                    category: 'fruits',
-                    quantity: 25,
-                    price: 399,
-                    image: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
-                    description: 'Crisp and sweet organic apples, perfect for snacking or baking.',
-                    sellerId: 'sample_seller_1',
-                    sellerName: 'Green Valley Farm',
-                    dateAdded: new Date().toISOString()
-                },
-                {
-                    id: 'sample_2',
-                    name: 'Fresh Carrots',
-                    category: 'vegetables',
-                    quantity: 15,
-                    price: 199,
-                    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
-                    description: 'Freshly harvested carrots, rich in vitamins and perfect for cooking.',
-                    sellerId: 'sample_seller_2',
-                    sellerName: 'Sunny Acres',
-                    dateAdded: new Date().toISOString()
-                },
-                {
-                    id: 'sample_3',
-                    name: 'Farm Fresh Tomatoes',
-                    category: 'vegetables',
-                    quantity: 30,
-                    price: 299,
-                    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop',
-                    description: 'Juicy vine-ripened tomatoes, perfect for salads and cooking.',
-                    sellerId: 'sample_seller_3',
-                    sellerName: 'Harvest Moon Farm',
-                    dateAdded: new Date().toISOString()
+            async registerServiceWorker() {
+                if ('serviceWorker' in navigator) {
+                    try {
+                        const registration = await navigator.serviceWorker.register(`
+                            data:text/javascript;base64,${btoa(`
+                                self.addEventListener('push', function(event) {
+                                    const data = event.data ? event.data.json() : {};
+                                    const options = {
+                                        body: data.body || 'New notification',
+                                        icon: data.icon || '/favicon.ico',
+                                        badge: data.badge || '/favicon.ico',
+                                        vibrate: data.vibrate || [100, 50, 100],
+                                        data: data.data || {}
+                                    };
+                                    
+                                    event.waitUntil(
+                                        self.registration.showNotification(data.title || 'NotifyPro', options)
+                                    );
+                                });
+                                
+                                self.addEventListener('notificationclick', function(event) {
+                                    event.notification.close();
+                                    event.waitUntil(
+                                        clients.openWindow('/')
+                                    );
+                                });
+                            `)}
+                        `);
+                        console.log('Service Worker registered');
+                    } catch (error) {
+                        console.error('Service Worker registration failed:', error);
+                    }
                 }
-            ];
-            const existingProducts = JSON.parse(localStorage.getItem('allProducts')) || [];
-            if (!existingProducts.length) {
-                localStorage.setItem('allProducts', JSON.stringify(sampleProducts));
-                allProducts = sampleProducts;
-            } else {
-                allProducts = existingProducts;
             }
-            loadAllProducts();
+
+            async requestNotificationPermission() {
+                if ('Notification' in window) {
+                    const permission = await Notification.requestPermission();
+                    if (permission === 'denied') {
+                        document.getElementById('permissionAlert').classList.remove('hidden');
+                    }
+                }
+            }
+
+            setupEventListeners() {
+                // Tab navigation
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        const screen = e.currentTarget.dataset.screen;
+                        this.switchScreen(screen);
+                    });
+                });
+
+                // FAB button
+                document.getElementById('fabBtn').addEventListener('click', () => {
+                    this.showCreateNotificationModal();
+                });
+
+                // Modal controls
+                document.getElementById('closeCreateModal').addEventListener('click', () => {
+                    this.hideCreateNotificationModal();
+                });
+
+                document.getElementById('cancelCreateModal').addEventListener('click', () => {
+                    this.hideCreateNotificationModal();
+                });
+
+                // Create notification form
+                document.getElementById('createNotificationForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createNotification();
+                });
+
+                // Schedule type change
+                document.getElementById('scheduleType').addEventListener('change', (e) => {
+                    this.handleScheduleTypeChange(e.target.value);
+                });
+
+                // Settings toggles
+                document.getElementById('notificationToggle').addEventListener('change', (e) => {
+                    this.settings.notificationsEnabled = e.target.checked;
+                    this.saveSettings();
+                });
+
+                document.getElementById('soundToggle').addEventListener('change', (e) => {
+                    this.settings.soundEnabled = e.target.checked;
+                    this.saveSettings();
+                });
+
+                document.getElementById('vibrationToggle').addEventListener('change', (e) => {
+                    this.settings.vibrationEnabled = e.target.checked;
+                    this.saveSettings();
+                });
+
+                // Category management
+                document.getElementById('addCategoryBtn').addEventListener('click', () => {
+                    this.showCategoryModal();
+                });
+
+                document.getElementById('closeCategoryModal').addEventListener('click', () => {
+                    this.hideCategoryModal();
+                });
+
+                document.getElementById('cancelCategoryModal').addEventListener('click', () => {
+                    this.hideCategoryModal();
+                });
+
+                document.getElementById('categoryForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.addCategory();
+                });
+
+                // Category color selection
+                document.querySelectorAll('.category-color-option').forEach(option => {
+                    option.addEventListener('click', (e) => {
+                        document.querySelectorAll('.category-color-option').forEach(el => el.classList.remove('ring-4', 'ring-blue-500'));
+                        e.target.classList.add('ring-4', 'ring-blue-500');
+                    });
+                });
+
+                // Quick reminder
+                document.getElementById('quickReminderBtn').addEventListener('click', () => {
+                    this.showQuickReminderModal();
+                });
+
+                document.getElementById('closeQuickReminderModal').addEventListener('click', () => {
+                    this.hideQuickReminderModal();
+                });
+
+                document.getElementById('cancelQuickReminderModal').addEventListener('click', () => {
+                    this.hideQuickReminderModal();
+                });
+
+                document.getElementById('quickReminderForm').addEventListener('submit', (e) => {
+                    e.preventDefault();
+                    this.createQuickReminder();
+                });
+
+                // Quick time buttons
+                document.querySelectorAll('.quick-time-btn').forEach(btn => {
+                    btn.addEventListener('click', (e) => {
+                        document.querySelectorAll('.quick-time-btn').forEach(el => el.classList.remove('bg-blue-500', 'text-white'));
+                        e.target.classList.add('bg-blue-500', 'text-white');
+                    });
+                });
+
+                // Test notification
+                document.getElementById('testNotificationBtn').addEventListener('click', () => {
+                    this.sendTestNotification();
+                });
+
+                // Enable notifications
+                document.getElementById('enableNotifications').addEventListener('click', () => {
+                    this.requestNotificationPermission();
+                });
+
+                // Data management
+                document.getElementById('exportDataBtn').addEventListener('click', () => {
+                    this.exportData();
+                });
+
+                document.getElementById('importDataBtn').addEventListener('click', () => {
+                    this.importData();
+                });
+
+                document.getElementById('clearDataBtn').addEventListener('click', () => {
+                    this.clearAllData();
+                });
+
+                // Filter changes
+                document.getElementById('categoryFilter').addEventListener('change', () => {
+                    this.updateNotificationsList();
+                });
+
+                document.getElementById('statusFilter').addEventListener('change', () => {
+                    this.updateNotificationsList();
+                });
+
+                // Clear history
+                document.getElementById('clearHistoryBtn').addEventListener('click', () => {
+                    this.clearHistory();
+                });
+            }
+
+            switchScreen(screenId) {
+                // Hide all screens
+                document.querySelectorAll('.screen').forEach(screen => {
+                    screen.classList.remove('active');
+                });
+
+                // Show selected screen
+                document.getElementById(screenId).classList.add('active');
+
+                // Update tab states
+                document.querySelectorAll('.tab-btn').forEach(btn => {
+                    btn.classList.remove('active', 'text-blue-600');
+                    btn.classList.add('text-gray-600');
+                });
+
+                const activeTab = document.querySelector(`[data-screen="${screenId}"]`);
+                if (activeTab) {
+                    activeTab.classList.add('active', 'text-blue-600');
+                    activeTab.classList.remove('text-gray-600');
+                }
+
+                this.currentScreen = screenId;
+                this.updateUI();
+            }
+
+            showCreateNotificationModal() {
+                document.getElementById('createNotificationModal').classList.add('active');
+                this.populateCategoryDropdown();
+            }
+
+            hideCreateNotificationModal() {
+                document.getElementById('createNotificationModal').classList.remove('active');
+                document.getElementById('createNotificationForm').reset();
+                document.getElementById('scheduleOptions').style.display = 'none';
+                document.getElementById('recurringOptions').style.display = 'none';
+            }
+
+            showCategoryModal() {
+                document.getElementById('categoryModal').classList.add('active');
+                // Reset color selection
+                document.querySelectorAll('.category-color-option').forEach(el => el.classList.remove('ring-4', 'ring-blue-500'));
+                document.querySelector('.category-color-option[data-color="#3B82F6"]').classList.add('ring-4', 'ring-blue-500');
+            }
+
+            hideCategoryModal() {
+                document.getElementById('categoryModal').classList.remove('active');
+                document.getElementById('categoryForm').reset();
+            }
+
+            showQuickReminderModal() {
+                document.getElementById('quickReminderModal').classList.add('active');
+            }
+
+            hideQuickReminderModal() {
+                document.getElementById('quickReminderModal').classList.remove('active');
+                document.getElementById('quickReminderForm').reset();
+                document.querySelectorAll('.quick-time-btn').forEach(el => el.classList.remove('bg-blue-500', 'text-white'));
+            }
+
+            handleScheduleTypeChange(type) {
+                const scheduleOptions = document.getElementById('scheduleOptions');
+                const recurringOptions = document.getElementById('recurringOptions');
+                
+                scheduleOptions.style.display = 'none';
+                recurringOptions.style.display = 'none';
+                
+                if (type === 'scheduled') {
+                    scheduleOptions.style.display = 'block';
+                    // Set default to today
+                    const today = new Date().toISOString().split('T')[0];
+                    document.getElementById('scheduleDate').value = today;
+                } else if (type === 'recurring') {
+                    recurringOptions.style.display = 'block';
+                }
+            }
+
+            createNotification() {
+                const formData = new FormData(document.getElementById('createNotificationForm'));
+                const title = document.getElementById('notificationTitle').value;
+                const message = document.getElementById('notificationMessage').value;
+                const category = document.getElementById('notificationCategory').value;
+                const scheduleType = document.getElementById('scheduleType').value;
+                
+                const notification = {
+                    id: Date.now().toString(),
+                    title,
+                    message,
+                    category,
+                    scheduleType,
+                    status: 'active',
+                    createdAt: new Date().toISOString(),
+                    scheduledAt: null,
+                    recurring: null
+                };
+
+                if (scheduleType === 'scheduled') {
+                    const date = document.getElementById('scheduleDate').value;
+                    const time = document.getElementById('scheduleTime').value;
+                    notification.scheduledAt = new Date(`${date}T${time}`).toISOString();
+                    notification.status = 'scheduled';
+                } else if (scheduleType === 'recurring') {
+                    const recurringType = document.getElementById('recurringType').value;
+                    const recurringTime = document.getElementById('recurringTime').value;
+                    notification.recurring = {
+                        type: recurringType,
+                        time: recurringTime
+                    };
+                    notification.status = 'recurring';
+                }
+
+                this.notifications.push(notification);
+                this.saveNotifications();
+                
+                if (scheduleType === 'now') {
+                    this.sendNotification(notification);
+                } else {
+                    this.scheduleNotification(notification);
+                }
+                
+                this.updateUI();
+                this.hideCreateNotificationModal();
+                this.showToast('Notification created successfully!');
+            }
+
+            createQuickReminder() {
+                const text = document.getElementById('quickReminderText').value;
+                const selectedBtn = document.querySelector('.quick-time-btn.bg-blue-500');
+                
+                if (!selectedBtn) {
+                    this.showToast('Please select a time for the reminder', 'error');
+                    return;
+                }
+                
+                const minutes = parseInt(selectedBtn.dataset.minutes);
+                const scheduledAt = new Date(Date.now() + minutes * 60 * 1000);
+                
+                const notification = {
+                    id: Date.now().toString(),
+                    title: 'Quick Reminder',
+                    message: text,
+                    category: 'general',
+                    scheduleType: 'scheduled',
+                    status: 'scheduled',
+                    createdAt: new Date().toISOString(),
+                    scheduledAt: scheduledAt.toISOString(),
+                    recurring: null
+                };
+                
+                this.notifications.push(notification);
+                this.saveNotifications();
+                this.scheduleNotification(notification);
+                this.updateUI();
+                this.hideQuickReminderModal();
+                this.showToast(`Reminder set for ${minutes} minutes from now!`);
+            }
+
+            addCategory() {
+                const name = document.getElementById('categoryName').value;
+                const selectedColor = document.querySelector('.category-color-option.ring-4');
+                const color = selectedColor ? selectedColor.dataset.color : '#3B82F6';
+                
+                const category = {
+                    id: name.toLowerCase().replace(/\s+/g, '-'),
+                    name,
+                    color
+                };
+                
+                this.categories.push(category);
+                this.saveCategories();
+                this.updateUI();
+                this.hideCategoryModal();
+                this.showToast('Category added successfully!');
+            }
+
+            sendNotification(notification) {
+                if (!this.settings.notificationsEnabled) return;
+                
+                if ('Notification' in window && Notification.permission === 'granted') {
+                    const options = {
+                        body: notification.message,
+                        icon: 'data:image/svg+xml;base64,PHN2ZyB3aWR0aD0iMTkyIiBoZWlnaHQ9IjE5MiIgdmlld0JveD0iMCAwIDE5MiAxOTIiIGZpbGw9Im5vbmUiIHhtbG5zPSJodHRwOi8vd3d3LnczLm9yZy8yMDAwL3N2ZyI+CjxyZWN0IHdpZHRoPSIxOTIiIGhlaWdodD0iMTkyIiByeD0iMjQiIGZpbGw9IiMzQjgyRjYiLz4KPHBhdGggZD0iTTk2IDQ4QzExNC4zMjggNDggMTI5IDYyLjY3MiAxMjkgODFWMTA3QzEyOSAxMjUuMzI4IDExNC4zMjggMTQwIDk2IDE0MEg5NkM3Ny42NzIgMTQwIDYzIDEyNS4zMjggNjMgMTA3Vjg1QzYzIDcxLjc0NTIgNzMuNzQ1MiA2MSA4NyA2MUgxMDVDMTEwLjUyMyA2MSAxMTUgNjUuNDc3MiAxMTUgNzFWMTA3QzExNSAxMTIuNTIzIDExMC41MjMgMTE3IDEwNSAxMTdIODdDODQuMjM4NiAxMTcgODIgMTE0Ljc2MSA4MiAxMTJWODVDODIgODIuMjM4NiA4NC4yMzg2IDgwIDg3IDgwSDEwNSIgc3Ryb2tlPSJ3aGl0ZSIgc3Ryb2tlLXdpZHRoPSI4IiBzdHJva2UtbGluZWNhcD0icm91bmQiIHN0cm9rZS1saW5lam9pbj0icm91bmQiLz4KPC9zdmc+',
+                        tag: notification.id,
+                        vibrate: this.settings.vibrationEnabled ? [100, 50, 100] : undefined
+                    };
+                    
+                    new Notification(notification.title, options);
+                }
+                
+                // Add to history
+                this.history.push({
+                    ...notification,
+                    sentAt: new Date().toISOString()
+                });
+                this.saveHistory();
+                
+                // Mark as completed if not recurring
+                if (notification.scheduleType !== 'recurring') {
+                    notification.status = 'completed';
+                    this.saveNotifications();
+                }
+            }
+
+            scheduleNotification(notification) {
+                if (notification.scheduleType === 'scheduled') {
+                    const scheduledTime = new Date(notification.scheduledAt);
+                    const now = new Date();
+                    const delay = scheduledTime.getTime() - now.getTime();
+                    
+                    if (delay > 0) {
+                        const timeoutId = setTimeout(() => {
+                            this.sendNotification(notification);
+                            this.scheduledNotifications.delete(notification.id);
+                        }, delay);
+                        
+                        this.scheduledNotifications.set(notification.id, timeoutId);
+                    }
+                } else if (notification.scheduleType === 'recurring') {
+                    this.scheduleRecurringNotification(notification);
+                }
+            }
+
+            scheduleRecurringNotification(notification) {
+                const now = new Date();
+                const [hours, minutes] = notification.recurring.time.split(':').map(Number);
+                
+                let nextTime = new Date(now);
+                nextTime.setHours(hours, minutes, 0, 0);
+                
+                // If the time has passed today, schedule for tomorrow
+                if (nextTime <= now) {
+                    nextTime.setDate(nextTime.getDate() + 1);
+                }
+                
+                const delay = nextTime.getTime() - now.getTime();
+                
+                const timeoutId = setTimeout(() => {
+                    this.sendNotification(notification);
+                    // Reschedule for next occurrence
+                    this.scheduleRecurringNotification(notification);
+                }, delay);
+                
+                this.scheduledNotifications.set(notification.id, timeoutId);
+            }
+
+            restoreScheduledNotifications() {
+                this.notifications.forEach(notification => {
+                    if (notification.status === 'scheduled' || notification.status === 'recurring') {
+                        this.scheduleNotification(notification);
+                    }
+                });
+            }
+
+            sendTestNotification() {
+                const testNotification = {
+                    id: 'test-' + Date.now(),
+                    title: 'Test Notification',
+                    message: 'This is a test notification from NotifyPro!',
+                    category: 'general',
+                    scheduleType: 'now',
+                    status: 'active',
+                    createdAt: new Date().toISOString(),
+                    scheduledAt: null,
+                    recurring: null
+                };
+                
+                this.sendNotification(testNotification);
+                this.showToast('Test notification sent!');
+            }
+
+            deleteNotification(id) {
+                // Cancel scheduled notification if exists
+                if (this.scheduledNotifications.has(id)) {
+                    clearTimeout(this.scheduledNotifications.get(id));
+                    this.scheduledNotifications.delete(id);
+                }
+                
+                this.notifications = this.notifications.filter(n => n.id !== id);
+                this.saveNotifications();
+                this.updateUI();
+                this.showToast('Notification deleted');
+            }
+
+            toggleNotificationStatus(id) {
+                const notification = this.notifications.find(n => n.id === id);
+                if (notification) {
+                    if (notification.status === 'active') {
+                        notification.status = 'paused';
+                        // Cancel scheduled notification
+                        if (this.scheduledNotifications.has(id)) {
+                            clearTimeout(this.scheduledNotifications.get(id));
+                            this.scheduledNotifications.delete(id);
+                        }
+                    } else if (notification.status === 'paused') {
+                        notification.status = 'active';
+                        // Reschedule if needed
+                        if (notification.scheduleType !== 'now') {
+                            this.scheduleNotification(notification);
+                        }
+                    }
+                    this.saveNotifications();
+                    this.updateUI();
+                }
+            }
+
+            populateCategoryDropdown() {
+                const selects = [
+                    document.getElementById('notificationCategory'),
+                    document.getElementById('categoryFilter'),
+                    document.getElementById('defaultCategory')
+                ];
+                
+                selects.forEach(select => {
+                    if (select) {
+                        const currentValue = select.value;
+                        select.innerHTML = '';
+                        
+                        if (select.id === 'categoryFilter') {
+                            select.innerHTML = '<option value="">All Categories</option>';
+                        }
+                        
+                        this.categories.forEach(category => {
+                            const option = document.createElement('option');
+                            option.value = category.id;
+                            option.textContent = category.name;
+                            select.appendChild(option);
+                        });
+                        
+                        if (currentValue) {
+                            select.value = currentValue;
+                        }
+                    }
+                });
+            }
+
+            updateUI() {
+                this.updateStats();
+                this.updateRecentNotifications();
+                this.updateNotificationsList();
+                this.updateCategoriesList();
+                this.updateHistoryList();
+                this.updateSettings();
+                this.populateCategoryDropdown();
+                this.updateNotificationBadge();
+            }
+
+            updateStats() {
+                const total = this.notifications.length;
+                const active = this.notifications.filter(n => n.status === 'active' || n.status === 'recurring').length;
+                const scheduled = this.notifications.filter(n => n.status === 'scheduled').length;
+                
+                document.getElementById('totalNotifications').textContent = total;
+                document.getElementById('activeNotifications').textContent = active;
+                document.getElementById('scheduledNotifications').textContent = scheduled;
+            }
+
+            updateRecentNotifications() {
+                const recentContainer = document.getElementById('recentNotifications');
+                const recent = this.notifications.slice(-5).reverse();
+                
+                if (recent.length === 0) {
+                    recentContainer.innerHTML = '<p class="text-gray-500 text-center py-8">No notifications yet. Create your first notification!</p>';
+                    return;
+                }
+                
+                recentContainer.innerHTML = recent.map(notification => {
+                    const category = this.categories.find(c => c.id === notification.category);
+                    return `
+                        <div class="bg-white rounded-lg p-4 shadow-sm border notification-card">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <div class="category-color" style="background-color: ${category?.color || '#3B82F6'}"></div>
+                                        <h3 class="font-semibold">${notification.title}</h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-2">${notification.message}</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500">${this.formatDate(notification.createdAt)}</span>
+                                        <span class="text-xs px-2 py-1 rounded-full ${this.getStatusColor(notification.status)}">${notification.status}</span>
+                                    </div>
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button onclick="app.toggleNotificationStatus('${notification.id}')" class="text-blue-500 hover:text-blue-700">
+                                        <i class="fas fa-${notification.status === 'active' ? 'pause' : 'play'}"></i>
+                                    </button>
+                                    <button onclick="app.deleteNotification('${notification.id}')" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateNotificationsList() {
+                const container = document.getElementById('notificationsList');
+                const categoryFilter = document.getElementById('categoryFilter')?.value || '';
+                const statusFilter = document.getElementById('statusFilter')?.value || '';
+                
+                let filtered = this.notifications;
+                
+                if (categoryFilter) {
+                    filtered = filtered.filter(n => n.category === categoryFilter);
+                }
+                
+                if (statusFilter) {
+                    filtered = filtered.filter(n => n.status === statusFilter);
+                }
+                
+                if (filtered.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-8">No notifications found.</p>';
+                    return;
+                }
+                
+                container.innerHTML = filtered.map(notification => {
+                    const category = this.categories.find(c => c.id === notification.category);
+                    return `
+                        <div class="bg-white rounded-lg p-4 shadow-sm border notification-card mb-3">
+                            <div class="flex items-start justify-between">
+                                <div class="flex-1">
+                                    <div class="flex items-center mb-1">
+                                        <div class="category-color" style="background-color: ${category?.color || '#3B82F6'}"></div>
+                                        <h3 class="font-semibold">${notification.title}</h3>
+                                    </div>
+                                    <p class="text-gray-600 text-sm mb-2">${notification.message}</p>
+                                    <div class="flex items-center justify-between">
+                                        <span class="text-xs text-gray-500">${this.formatDate(notification.createdAt)}</span>
+                                        <span class="text-xs px-2 py-1 rounded-full ${this.getStatusColor(notification.status)}">${notification.status}</span>
+                                    </div>
+                                    ${notification.scheduledAt ? `<p class="text-xs text-gray-500 mt-1">Scheduled: ${this.formatDate(notification.scheduledAt)}</p>` : ''}
+                                </div>
+                                <div class="flex items-center space-x-2 ml-4">
+                                    <button onclick="app.toggleNotificationStatus('${notification.id}')" class="text-blue-500 hover:text-blue-700">
+                                        <i class="fas fa-${notification.status === 'active' ? 'pause' : 'play'}"></i>
+                                    </button>
+                                    <button onclick="app.deleteNotification('${notification.id}')" class="text-red-500 hover:text-red-700">
+                                        <i class="fas fa-trash"></i>
+                                    </button>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateCategoriesList() {
+                const container = document.getElementById('categoriesList');
+                container.innerHTML = this.categories.map(category => `
+                    <div class="flex items-center justify-between p-2 border rounded">
+                        <div class="flex items-center">
+                            <div class="category-color" style="background-color: ${category.color}"></div>
+                            <span>${category.name}</span>
+                        </div>
+                        ${category.id !== 'general' ? `
+                            <button onclick="app.deleteCategory('${category.id}')" class="text-red-500 hover:text-red-700">
+                                <i class="fas fa-trash"></i>
+                            </button>
+                        ` : ''}
+                    </div>
+                `).join('');
+            }
+
+            updateHistoryList() {
+                const container = document.getElementById('historyList');
+                
+                if (this.history.length === 0) {
+                    container.innerHTML = '<p class="text-gray-500 text-center py-8">No notification history yet.</p>';
+                    return;
+                }
+                
+                container.innerHTML = this.history.slice().reverse().map(item => {
+                    const category = this.categories.find(c => c.id === item.category);
+                    return `
+                        <div class="bg-white rounded-lg p-4 shadow-sm border">
+                            <div class="flex items-center mb-1">
+                                <div class="category-color" style="background-color: ${category?.color || '#3B82F6'}"></div>
+                                <h3 class="font-semibold">${item.title}</h3>
+                            </div>
+                            <p class="text-gray-600 text-sm mb-2">${item.message}</p>
+                            <div class="flex items-center justify-between">
+                                <span class="text-xs text-gray-500">Sent: ${this.formatDate(item.sentAt)}</span>
+                                <span class="text-xs px-2 py-1 rounded-full bg-green-100 text-green-800">Delivered</span>
+                            </div>
+                        </div>
+                    `;
+                }).join('');
+            }
+
+            updateSettings() {
+                document.getElementById('notificationToggle').checked = this.settings.notificationsEnabled;
+                document.getElementById('soundToggle').checked = this.settings.soundEnabled;
+                document.getElementById('vibrationToggle').checked = this.settings.vibrationEnabled;
+                document.getElementById('defaultCategory').value = this.settings.defaultCategory;
+                document.getElementById('defaultReminderTime').value = this.settings.defaultReminderTime;
+            }
+
+            updateNotificationBadge() {
+                const badge = document.getElementById('notificationBadge');
+                const activeCount = this.notifications.filter(n => n.status === 'active' || n.status === 'recurring').length;
+                
+                if (activeCount > 0) {
+                    badge.textContent = activeCount;
+                    badge.style.display = 'flex';
+                } else {
+                    badge.style.display = 'none';
+                }
+            }
+
+            deleteCategory(id) {
+                if (confirm('Are you sure you want to delete this category?')) {
+                    this.categories = this.categories.filter(c => c.id !== id);
+                    // Update notifications using this category to general
+                    this.notifications.forEach(n => {
+                        if (n.category === id) {
+                            n.category = 'general';
+                        }
+                    });
+                    this.saveCategories();
+                    this.saveNotifications();
+                    this.updateUI();
+                    this.showToast('Category deleted');
+                }
+            }
+
+            clearHistory() {
+                if (confirm('Are you sure you want to clear all notification history?')) {
+                    this.history = [];
+                    this.saveHistory();
+                    this.updateUI();
+                    this.showToast('History cleared');
+                }
+            }
+
+            exportData() {
+                const data = {
+                    notifications: this.notifications,
+                    categories: this.categories,
+                    settings: this.settings,
+                    history: this.history,
+                    exportDate: new Date().toISOString()
+                };
+                
+                const blob = new Blob([JSON.stringify(data, null, 2)], { type: 'application/json' });
+                const url = URL.createObjectURL(blob);
+                const a = document.createElement('a');
+                a.href = url;
+                a.download = `notifypro-backup-${new Date().toISOString().split('T')[0]}.json`;
+                a.click();
+                URL.revokeObjectURL(url);
+                this.showToast('Data exported successfully!');
+            }
+
+            importData() {
+                const input = document.createElement('input');
+                input.type = 'file';
+                input.accept = '.json';
+                input.onchange = (e) => {
+                    const file = e.target.files[0];
+                    if (file) {
+                        const reader = new FileReader();
+                        reader.onload = (e) => {
+                            try {
+                                const data = JSON.parse(e.target.result);
+                                if (data.notifications && data.categories && data.settings) {
+                                    this.notifications = data.notifications;
+                                    this.categories = data.categories;
+                                    this.settings = data.settings;
+                                    this.history = data.history || [];
+                                    this.saveAll();
+                                    this.updateUI();
+                                    this.showToast('Data imported successfully!');
+                                } else {
+                                    this.showToast('Invalid backup file format', 'error');
+                                }
+                            } catch (error) {
+                                this.showToast('Error reading backup file', 'error');
+                            }
+                        };
+                        reader.readAsText(file);
+                    }
+                };
+                input.click();
+            }
+
+            clearAllData() {
+                if (confirm('Are you sure you want to clear all data? This action cannot be undone.')) {
+                    this.notifications = [];
+                    this.categories = [
+                        { id: 'general', name: 'General', color: '#3B82F6' },
+                        { id: 'work', name: 'Work', color: '#10B981' },
+                        { id: 'personal', name: 'Personal', color: '#F59E0B' },
+                        { id: 'health', name: 'Health', color: '#EF4444' }
+                    ];
+                    this.settings = {
+                        notificationsEnabled: true,
+                        soundEnabled: true,
+                        vibrationEnabled: true,
+                        defaultCategory: 'general',
+                        defaultReminderTime: 15
+                    };
+                    this.history = [];
+                    this.scheduledNotifications.clear();
+                    this.saveAll();
+                    this.updateUI();
+                    this.showToast('All data cleared');
+                }
+            }
+
+            formatDate(dateString) {
+                return new Date(dateString).toLocaleString();
+            }
+
+            getStatusColor(status) {
+                switch (status) {
+                    case 'active': return 'bg-green-100 text-green-800';
+                    case 'paused': return 'bg-yellow-100 text-yellow-800';
+                    case 'scheduled': return 'bg-blue-100 text-blue-800';
+                    case 'completed': return 'bg-gray-100 text-gray-800';
+                    case 'recurring': return 'bg-purple-100 text-purple-800';
+                    default: return 'bg-gray-100 text-gray-800';
+                }
+            }
+
+            showToast(message, type = 'success') {
+                const toast = document.createElement('div');
+                toast.className = `fixed top-4 right-4 z-50 p-4 rounded-lg text-white ${type === 'error' ? 'bg-red-500' : 'bg-green-500'}`;
+                toast.textContent = message;
+                document.body.appendChild(toast);
+                
+                setTimeout(() => {
+                    toast.remove();
+                }, 3000);
+            }
+
+            saveNotifications() {
+                localStorage.setItem('notifications', JSON.stringify(this.notifications));
+            }
+
+            saveCategories() {
+                localStorage.setItem('categories', JSON.stringify(this.categories));
+            }
+
+            saveSettings() {
+                localStorage.setItem('settings', JSON.stringify(this.settings));
+            }
+
+            saveHistory() {
+                localStorage.setItem('history', JSON.stringify(this.history));
+            }
+
+            saveAll() {
+                this.saveNotifications();
+                this.saveCategories();
+                this.saveSettings();
+                this.saveHistory();
+            }
         }
+
+        // Initialize app when DOM is loaded
+        document.addEventListener('DOMContentLoaded', () => {
+            window.app = new NotificationApp();
+        });
     </script>
 </body>
 </html>
