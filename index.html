@@ -25,6 +25,15 @@
             transform: translateY(-2px);
             box-shadow: 0 5px 15px rgba(76, 175, 80, 0.4);
         }
+        .btn-disabled {
+            background: linear-gradient(45deg, #9CA3AF, #6B7280);
+            cursor: not-allowed;
+            opacity: 0.7;
+        }
+        .btn-disabled:hover {
+            transform: none;
+            box-shadow: none;
+        }
         .product-card {
             transition: all 0.3s ease;
             border-radius: 15px;
@@ -91,6 +100,14 @@
             font-weight: 600;
             font-size: 14px;
         }
+        .own-product-tag {
+            background: linear-gradient(45deg, #6366F1, #8B5CF6);
+            color: white;
+            padding: 4px 8px;
+            border-radius: 12px;
+            font-size: 10px;
+            font-weight: 500;
+        }
         .loading-spinner {
             border: 3px solid #f3f3f3;
             border-top: 3px solid #4CAF50;
@@ -122,6 +139,7 @@
         }
         .success { background: linear-gradient(45deg, #4CAF50, #45a049); }
         .error { background: linear-gradient(45deg, #f44336, #d32f2f); }
+        .info { background: linear-gradient(45deg, #2196F3, #1976D2); }
         .header-gradient {
             background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
         }
@@ -143,6 +161,12 @@
         }
         .section {
             padding: 1rem;
+        }
+        .line-clamp-2 {
+            display: -webkit-box;
+            -webkit-line-clamp: 2;
+            -webkit-box-orient: vertical;
+            overflow: hidden;
         }
         @media (max-width: 640px) {
             .floating-cart {
@@ -168,6 +192,7 @@
         <span id="cartBadge" class="absolute -top-2 -right-2 bg-red-500 text-white rounded-full w-6 h-6 flex items-center justify-center text-xs font-bold">0</span>
     </div>
 
+    <!-- Auth Screen -->
     <div id="authScreen" class="h-screen gradient-bg flex items-center justify-center p-4">
         <div class="bg-white rounded-3xl p-8 w-full max-w-md card-shadow">
             <div class="text-center mb-8">
@@ -207,7 +232,7 @@
                         <input type="email" id="signupEmail" placeholder="Email" required class="w-full p-4 input-field">
                     </div>
                     <div>
-                        <input type="password" id="signupPassword" placeholder="Password" required class="w-full p-4 input-field">
+                        <input type="password" id="signupPassword" placeholder="Password (min 6 characters)" required class="w-full p-4 input-field">
                     </div>
                     <button type="submit" class="w-full btn-primary text-white py-4 rounded-xl font-semibold">
                         <i class="fas fa-user-plus mr-2"></i>Create Account
@@ -221,7 +246,9 @@
         </div>
     </div>
 
+    <!-- Main App -->
     <div id="mainApp" class="hidden">
+        <!-- Header -->
         <header class="header-gradient text-white p-4 fixed top-0 left-0 right-0 z-40">
             <div class="flex items-center justify-between">
                 <div class="flex items-center">
@@ -240,6 +267,7 @@
         </header>
 
         <div class="content-wrapper pt-20 pb-16">
+            <!-- Home Section -->
             <div id="homeSection" class="section p-4">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">
@@ -283,6 +311,7 @@
                 </div>
             </div>
 
+            <!-- Sell Section -->
             <div id="sellSection" class="section p-4 hidden">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">
@@ -339,9 +368,15 @@
                         <i class="fas fa-box mr-2 text-green-600"></i>My Products
                     </h3>
                     <div id="myProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
+                    <div id="myProductsEmpty" class="empty-state hidden">
+                        <i class="fas fa-box-open"></i>
+                        <h3 class="text-lg font-semibold mb-2">No products listed yet</h3>
+                        <p>Start selling by adding your first product above!</p>
+                    </div>
                 </div>
             </div>
 
+            <!-- Market Section -->
             <div id="marketSection" class="section p-4 hidden">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">
@@ -371,6 +406,7 @@
                 <div id="marketProductsGrid" class="grid grid-cols-1 sm:grid-cols-2 gap-4"></div>
             </div>
 
+            <!-- Account Section -->
             <div id="accountSection" class="section p-4 hidden">
                 <div class="mb-6">
                     <h2 class="text-2xl font-bold text-gray-800 mb-2">
@@ -434,6 +470,7 @@
             </div>
         </div>
 
+        <!-- Cart Modal -->
         <div id="cartModal" class="fixed inset-0 bg-black bg-opacity-50 z-50 hidden flex items-end sm:items-center justify-center">
             <div class="bg-white rounded-t-3xl sm:rounded-3xl w-full sm:max-w-md max-h-[80vh] overflow-y-auto">
                 <div class="p-6">
@@ -457,6 +494,7 @@
             </div>
         </div>
 
+        <!-- Bottom Navigation -->
         <nav class="bottom-nav fixed bottom-0 left-0 right-0 z-40">
             <div class="flex justify-around py-3">
                 <button class="nav-item active flex flex-col items-center p-2" data-tab="home">
@@ -479,55 +517,82 @@
         </nav>
     </div>
 
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-app-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-auth-compat.js"></script>
-    <script src="https://www.gstatic.com/firebasejs/9.0.0/firebase-firestore-compat.js"></script>
+    <!-- Firebase SDKs -->
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-app-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-auth-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-firestore-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-storage-compat.js"></script>
+    <script src="https://www.gstatic.com/firebasejs/9.23.0/firebase-database-compat.js"></script>
 
     <script>
+        // Firebase Configuration
         const firebaseConfig = {
-            apiKey: "AIzaSyDixufxD2KlUSPgqPIJQNatpQ0XEnpTouA",
-            authDomain: "lumilearn-df84e.firebaseapp.com",
-            databaseURL: "https://lumilearn-df84e-default-rtdb.firebaseio.com",
-            projectId: "lumilearn-df84e",
-            storageBucket: "lumilearn-df84e.appspot.com",
-            messagingSenderId: "972914519676",
-            appId: "1:972914519676:web:8c4c2a47beb1864954e3f9",
-            measurementId: "G-4LZM3VLSSS"
+            apiKey: "AIzaSyAGP9EXBU1HOK9Hm5q5SetXYqG2DjRdBr4",
+            authDomain: "realtimedatabase-98181.firebaseapp.com",
+            databaseURL: "https://realtimedatabase-98181-default-rtdb.firebaseio.com",
+            projectId: "realtimedatabase-98181",
+            storageBucket: "realtimedatabase-98181.appspot.com",
+            messagingSenderId: "169892823409",
+            appId: "1:169892823409:web:0a8052a7a1d57c4c4676d0",
+            measurementId: "G-F8RVHR3C6Q"
         };
 
+        // Initialize Firebase
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
+        const storage = firebase.storage();
+        const realtimeDb = firebase.database();
 
+        // Global Variables
         let currentUser = null;
         let allProducts = [];
         let userProducts = [];
-        let cart = JSON.parse(localStorage.getItem('cart')) || [];
+        let cart = [];
         let currentTab = 'home';
+        let unsubscribeProducts = null;
+        let unsubscribeUserData = null;
 
+        // DOM Elements
         const authScreen = document.getElementById('authScreen');
         const mainApp = document.getElementById('mainApp');
         const loadingScreen = document.getElementById('loadingScreen');
         const notification = document.getElementById('notification');
 
+        // Initialize App
         document.addEventListener('DOMContentLoaded', function() {
             setTimeout(() => {
                 loadingScreen.style.display = 'none';
-                checkAuthState();
+                initializeApp();
             }, 2000);
-            setupEventListeners();
-            loadSampleData();
-            updateCartUI();
         });
 
+        function initializeApp() {
+            setupEventListeners();
+            checkAuthState();
+        }
+
+        // Authentication State Observer
         function checkAuthState() {
-            const savedUser = localStorage.getItem('currentUser');
-            if (savedUser) {
-                currentUser = JSON.parse(savedUser);
-                showMainApp();
-            } else {
-                showAuthScreen();
-            }
+            auth.onAuthStateChanged((user) => {
+                if (user) {
+                    currentUser = user;
+                    loadUserData();
+                    showMainApp();
+                } else {
+                    currentUser = null;
+                    cleanup();
+                    showAuthScreen();
+                }
+            });
+        }
+
+        function cleanup() {
+            if (unsubscribeProducts) unsubscribeProducts();
+            if (unsubscribeUserData) unsubscribeUserData();
+            allProducts = [];
+            userProducts = [];
+            cart = [];
         }
 
         function showAuthScreen() {
@@ -540,19 +605,28 @@
             mainApp.classList.remove('hidden');
             updateUserInfo();
             loadAllProducts();
+            loadUserCart();
             switchTab(currentTab);
         }
 
+        // Event Listeners Setup
         function setupEventListeners() {
+            // Auth form listeners
             document.getElementById('loginFormElement').addEventListener('submit', handleLogin);
             document.getElementById('signupFormElement').addEventListener('submit', handleSignup);
             document.getElementById('showSignup').addEventListener('click', showSignupForm);
             document.getElementById('showLogin').addEventListener('click', showLoginForm);
+            
+            // Navigation listeners
             document.querySelectorAll('.nav-item').forEach(item => {
                 item.addEventListener('click', (e) => switchTab(e.currentTarget.dataset.tab));
             });
+            
+            // Form listeners
             document.getElementById('sellForm').addEventListener('submit', handleAddProduct);
             document.getElementById('profileForm').addEventListener('submit', handleUpdateProfile);
+            
+            // Search and filter listeners
             document.getElementById('searchInput').addEventListener('input', handleSearch);
             document.querySelectorAll('.category-filter').forEach(btn => {
                 btn.addEventListener('click', (e) => {
@@ -561,31 +635,47 @@
                     updateFilterButtons(e.currentTarget);
                 });
             });
+            
+            // Cart listeners
             document.getElementById('closeCartModal').addEventListener('click', toggleCartModal);
             document.getElementById('checkoutBtn').addEventListener('click', handleCheckout);
+            
+            // Logout listener
             document.getElementById('logoutBtn').addEventListener('click', handleLogout);
         }
 
+        // Authentication Handlers
         async function handleLogin(e) {
             e.preventDefault();
             const email = document.getElementById('loginEmail').value.trim();
             const password = document.getElementById('loginPassword').value;
+            
             if (!email || !password) {
                 showNotification('Please fill in all fields', 'error');
                 return;
             }
+
             try {
-                const userData = {
-                    email: email,
-                    name: email.split('@')[0],
-                    id: 'user_' + Date.now()
-                };
-                currentUser = userData;
-                localStorage.setItem('currentUser', JSON.stringify(userData));
+                showNotification('Logging in...', 'info');
+                await auth.signInWithEmailAndPassword(email, password);
                 showNotification('Login successful!', 'success');
-                showMainApp();
             } catch (error) {
-                showNotification('Login failed. Please try again.', 'error');
+                console.error('Login error:', error);
+                let errorMessage = 'Login failed. ';
+                switch (error.code) {
+                    case 'auth/user-not-found':
+                        errorMessage += 'No account found with this email.';
+                        break;
+                    case 'auth/wrong-password':
+                        errorMessage += 'Incorrect password.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage += 'Invalid email address.';
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+                showNotification(errorMessage, 'error');
             }
         }
 
@@ -594,23 +684,54 @@
             const name = document.getElementById('signupName').value.trim();
             const email = document.getElementById('signupEmail').value.trim();
             const password = document.getElementById('signupPassword').value;
+            
             if (!name || !email || !password) {
                 showNotification('Please fill in all fields', 'error');
                 return;
             }
+
+            if (password.length < 6) {
+                showNotification('Password must be at least 6 characters', 'error');
+                return;
+            }
+
             try {
-                const userData = {
-                    email: email,
+                showNotification('Creating account...', 'info');
+                const userCredential = await auth.createUserWithEmailAndPassword(email, password);
+                
+                // Update user profile
+                await userCredential.user.updateProfile({
+                    displayName: name
+                });
+
+                // Create user document in Firestore
+                await db.collection('users').doc(userCredential.user.uid).set({
                     name: name,
-                    id: 'user_' + Date.now(),
-                    memberSince: new Date().toLocaleDateString()
-                };
-                currentUser = userData;
-                localStorage.setItem('currentUser', JSON.stringify(userData));
+                    email: email,
+                    memberSince: firebase.firestore.FieldValue.serverTimestamp(),
+                    phone: '',
+                    location: '',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
                 showNotification('Account created successfully!', 'success');
-                showMainApp();
             } catch (error) {
-                showNotification('Signup failed. Please try again.', 'error');
+                console.error('Signup error:', error);
+                let errorMessage = 'Signup failed. ';
+                switch (error.code) {
+                    case 'auth/email-already-in-use':
+                        errorMessage += 'An account with this email already exists.';
+                        break;
+                    case 'auth/invalid-email':
+                        errorMessage += 'Invalid email address.';
+                        break;
+                    case 'auth/weak-password':
+                        errorMessage += 'Password is too weak.';
+                        break;
+                    default:
+                        errorMessage += error.message;
+                }
+                showNotification(errorMessage, 'error');
             }
         }
 
@@ -624,42 +745,40 @@
             document.getElementById('loginForm').classList.remove('hidden');
         }
 
-        function handleLogout() {
-            localStorage.removeItem('currentUser');
-            localStorage.removeItem('cart');
-            currentUser = null;
-            cart = [];
-            showNotification('Logged out successfully!', 'success');
-            showAuthScreen();
-        }
-
-        function switchTab(tab) {
-            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
-            document.getElementById(tab + 'Section').classList.remove('hidden');
-            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
-            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
-            currentTab = tab;
-            if (tab === 'market') updateMarketStats();
-            else if (tab === 'sell') loadUserProducts();
-            else if (tab === 'account') updateAccountInfo();
-            document.querySelector('.content-wrapper').scrollTop = 0;
-        }
-
-        function updateUserInfo() {
-            if (currentUser) {
-                document.getElementById('userGreeting').textContent = `Welcome, ${currentUser.name}!`;
+        async function handleLogout() {
+            try {
+                await saveUserCart();
+                await auth.signOut();
+                showNotification('Logged out successfully!', 'success');
+            } catch (error) {
+                console.error('Logout error:', error);
+                showNotification('Error logging out', 'error');
             }
         }
 
-        function showNotification(message, type) {
-            notification.textContent = message;
-            notification.className = `notification ${type}`;
-            notification.classList.remove('hidden');
-            setTimeout(() => notification.classList.add('hidden'), 3000);
+        // User Data Management
+        async function loadUserData() {
+            if (!currentUser) return;
+
+            try {
+                // Load user profile
+                unsubscribeUserData = db.collection('users').doc(currentUser.uid)
+                    .onSnapshot((doc) => {
+                        if (doc.exists) {
+                            const userData = doc.data();
+                            // Update UI with user data
+                            updateUserInfo();
+                        }
+                    });
+            } catch (error) {
+                console.error('Error loading user data:', error);
+            }
         }
 
+        // Product Management Functions
         async function handleAddProduct(e) {
             e.preventDefault();
+            
             const productName = document.getElementById('productName').value.trim();
             const productCategory = document.getElementById('productCategory').value;
             const productQuantity = parseFloat(document.getElementById('productQuantity').value);
@@ -672,76 +791,416 @@
                 return;
             }
 
-            let imageUrl = productImageFile ? await new Promise((resolve) => {
-                const reader = new FileReader();
-                reader.onload = (event) => resolve(event.target.result);
-                reader.readAsDataURL(productImageFile);
-            }).catch(() => {
-                showNotification('Failed to upload image', 'error');
-                return getDefaultImage(productCategory);
-            }) : getDefaultImage(productCategory);
-
-            const productData = {
-                id: 'product_' + Date.now(),
-                name: productName,
-                category: productCategory,
-                quantity: productQuantity,
-                price: productPrice,
-                image: imageUrl,
-                description: productDescription,
-                sellerId: currentUser.id,
-                sellerName: currentUser.name,
-                dateAdded: new Date().toISOString()
-            };
-
             try {
-                let products = JSON.parse(localStorage.getItem('allProducts')) || [];
-                products.push(productData);
-                localStorage.setItem('allProducts', JSON.stringify(products));
-                allProducts = products;
+                showNotification('Adding product...', 'info');
+
+                // Handle image upload
+                let imageUrl = getDefaultImage(productCategory);
+                if (productImageFile) {
+                    const imageRef = storage.ref(`products/${currentUser.uid}/${Date.now()}_${productImageFile.name}`);
+                    const uploadTask = await imageRef.put(productImageFile);
+                    imageUrl = await uploadTask.ref.getDownloadURL();
+                }
+
+                // Create product document
+                const productData = {
+                    name: productName,
+                    category: productCategory,
+                    quantity: productQuantity,
+                    price: productPrice,
+                    image: imageUrl,
+                    description: productDescription || 'Fresh and organic produce',
+                    sellerId: currentUser.uid,
+                    sellerName: currentUser.displayName || 'Anonymous Seller',
+                    sellerEmail: currentUser.email,
+                    dateAdded: firebase.firestore.FieldValue.serverTimestamp(),
+                    status: 'available'
+                };
+
+                await db.collection('products').add(productData);
+                
                 showNotification('Product added successfully!', 'success');
                 document.getElementById('sellForm').reset();
-                loadAllProducts();
-                loadUserProducts();
+                
             } catch (error) {
-                showNotification('Failed to add product', 'error');
+                console.error('Error adding product:', error);
+                showNotification('Failed to add product. Please try again.', 'error');
             }
         }
 
         function loadAllProducts() {
-            const savedProducts = localStorage.getItem('allProducts');
-            allProducts = savedProducts ? JSON.parse(savedProducts) : [];
-            displayProducts(allProducts, 'productsGrid');
-            displayProducts(allProducts, 'marketProductsGrid');
-            const emptyState = document.getElementById('emptyState');
-            if (allProducts.length === 0) {
-                emptyState.classList.remove('hidden');
-                document.getElementById('productsGrid').classList.add('hidden');
-            } else {
-                emptyState.classList.add('hidden');
-                document.getElementById('productsGrid').classList.remove('hidden');
-            }
+            // Real-time listener for all products
+            unsubscribeProducts = db.collection('products')
+                .orderBy('dateAdded', 'desc')
+                .onSnapshot((snapshot) => {
+                    allProducts = [];
+                    snapshot.forEach((doc) => {
+                        allProducts.push({
+                            id: doc.id,
+                            ...doc.data()
+                        });
+                    });
+                    
+                    displayProducts(allProducts, 'productsGrid');
+                    displayProducts(allProducts, 'marketProductsGrid');
+                    loadUserProducts();
+                    
+                    // Handle empty state
+                    const emptyState = document.getElementById('emptyState');
+                    if (allProducts.length === 0) {
+                        emptyState.classList.remove('hidden');
+                        document.getElementById('productsGrid').classList.add('hidden');
+                    } else {
+                        emptyState.classList.add('hidden');
+                        document.getElementById('productsGrid').classList.remove('hidden');
+                    }
+                }, (error) => {
+                    console.error('Error loading products:', error);
+                    showNotification('Error loading products', 'error');
+                });
         }
 
         function loadUserProducts() {
             if (!currentUser) return;
-            userProducts = allProducts.filter(product => product.sellerId === currentUser.id);
-            displayProducts(userProducts, 'myProductsGrid');
+            
+            userProducts = allProducts.filter(product => product.sellerId === currentUser.uid);
+            displayUserProducts(userProducts, 'myProductsGrid');
+            
+            // Handle empty state for user products
+            const myProductsEmpty = document.getElementById('myProductsEmpty');
+            if (userProducts.length === 0) {
+                myProductsEmpty.classList.remove('hidden');
+                document.getElementById('myProductsGrid').classList.add('hidden');
+            } else {
+                myProductsEmpty.classList.add('hidden');
+                document.getElementById('myProductsGrid').classList.remove('hidden');
+            }
         }
 
+        async function deleteProduct(productId) {
+            if (!confirm('Are you sure you want to delete this product?')) return;
+            
+            try {
+                await db.collection('products').doc(productId).delete();
+                showNotification('Product deleted successfully!', 'success');
+            } catch (error) {
+                console.error('Error deleting product:', error);
+                showNotification('Failed to delete product', 'error');
+            }
+        }
+
+        // Cart Management
+        async function loadUserCart() {
+            if (!currentUser) return;
+
+            try {
+                const cartDoc = await db.collection('carts').doc(currentUser.uid).get();
+                if (cartDoc.exists) {
+                    cart = cartDoc.data().items || [];
+                } else {
+                    cart = [];
+                }
+                updateCartUI();
+            } catch (error) {
+                console.error('Error loading cart:', error);
+                cart = [];
+                updateCartUI();
+            }
+        }
+
+        async function saveUserCart() {
+            if (!currentUser) return;
+
+            try {
+                await db.collection('carts').doc(currentUser.uid).set({
+                    items: cart,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+            } catch (error) {
+                console.error('Error saving cart:', error);
+            }
+        }
+
+        function addToCart(productId) {
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) {
+                showNotification('Product not found!', 'error');
+                return;
+            }
+
+            // Prevent adding own products to cart
+            if (product.sellerId === currentUser.uid) {
+                showNotification('You cannot buy your own products!', 'error');
+                return;
+            }
+
+            // Check if product is available
+            if (product.quantity <= 0) {
+                showNotification('Product is out of stock!', 'error');
+                return;
+            }
+
+            const existingItem = cart.find(item => item.productId === productId);
+            
+            if (existingItem) {
+                if (existingItem.quantity < product.quantity) {
+                    existingItem.quantity += 1;
+                } else {
+                    showNotification('Maximum available quantity reached!', 'error');
+                    return;
+                }
+            } else {
+                cart.push({
+                    productId: productId,
+                    quantity: 1,
+                    productData: product
+                });
+            }
+
+            saveUserCart();
+            updateCartUI();
+            showNotification(`${product.name} added to cart!`, 'success');
+        }
+
+        function removeFromCart(productId) {
+            cart = cart.filter(item => item.productId !== productId);
+            saveUserCart();
+            updateCartUI();
+            displayCartItems();
+        }
+
+        function updateCartQuantity(productId, change) {
+            const item = cart.find(item => item.productId === productId);
+            if (!item) return;
+
+            const product = allProducts.find(p => p.id === productId);
+            if (!product) {
+                removeFromCart(productId);
+                return;
+            }
+
+            if (change > 0 && item.quantity >= product.quantity) {
+                showNotification('Maximum available quantity reached!', 'error');
+                return;
+            }
+
+            item.quantity += change;
+            
+            if (item.quantity <= 0) {
+                removeFromCart(productId);
+            } else {
+                saveUserCart();
+                updateCartUI();
+                displayCartItems();
+            }
+        }
+
+        function updateCartUI() {
+            const cartBadge = document.getElementById('cartBadge');
+            const floatingCart = document.getElementById('floatingCart');
+            const cartTotal = document.getElementById('cartTotal');
+            
+            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
+            const totalPrice = cart.reduce((sum, item) => {
+                const product = item.productData || allProducts.find(p => p.id === item.productId);
+                return sum + (product ? product.price * item.quantity : 0);
+            }, 0);
+
+            cartBadge.textContent = totalItems;
+            cartTotal.textContent = `₹${totalPrice.toFixed(2)}`;
+            floatingCart.classList.toggle('hidden', totalItems === 0);
+        }
+
+        function toggleCartModal() {
+            const modal = document.getElementById('cartModal');
+            modal.classList.toggle('hidden');
+            if (!modal.classList.contains('hidden')) {
+                displayCartItems();
+            }
+        }
+
+        function displayCartItems() {
+            const container = document.getElementById('cartItems');
+            
+            if (!cart.length) {
+                container.innerHTML = `
+                    <div class="text-center py-8 text-gray-500">
+                        <i class="fas fa-shopping-cart text-4xl mb-3"></i>
+                        <p>Your cart is empty</p>
+                    </div>`;
+                return;
+            }
+
+            container.innerHTML = cart.map(item => {
+                const product = item.productData || allProducts.find(p => p.id === item.productId);
+                if (!product) return '';
+                
+                return `
+                    <div class="flex items-center space-x-3 bg-gray-50 rounded-xl p-3">
+                        <img src="${product.image}" alt="${product.name}" class="w-16 h-16 object-cover rounded-lg">
+                        <div class="flex-1">
+                            <h4 class="font-semibold text-gray-800">${product.name}</h4>
+                            <p class="text-sm text-gray-600">₹${product.price}/kg</p>
+                            <p class="text-xs text-gray-500">by ${product.sellerName}</p>
+                        </div>
+                        <div class="flex items-center space-x-2">
+                            <button onclick="updateCartQuantity('${item.productId}', -1)" class="w-8 h-8 bg-gray-200 hover:bg-gray-300 rounded-full flex items-center justify-center transition-colors">
+                                <i class="fas fa-minus text-sm"></i>
+                            </button>
+                            <span class="w-8 text-center font-semibold">${item.quantity}</span>
+                            <button onclick="updateCartQuantity('${item.productId}', 1)" 
+                                    class="w-8 h-8 ${item.quantity >= product.quantity ? 'bg-gray-300 cursor-not-allowed' : 'bg-green-500 hover:bg-green-600'} text-white rounded-full flex items-center justify-center transition-colors">
+                                <i class="fas fa-plus text-sm"></i>
+                            </button>
+                        </div>
+                        <button onclick="removeFromCart('${item.productId}')" class="text-red-500 hover:text-red-700 transition-colors">
+                            <i class="fas fa-trash"></i>
+                        </button>
+                    </div>
+                `;
+            }).filter(item => item).join('');
+        }
+
+        async function handleCheckout() {
+            if (!cart.length) {
+                showNotification('Your cart is empty!', 'error');
+                return;
+            }
+
+            try {
+                const total = cart.reduce((sum, item) => {
+                    const product = item.productData || allProducts.find(p => p.id === item.productId);
+                    return sum + (product ? product.price * item.quantity : 0);
+                }, 0);
+
+                // Create order document
+                const orderData = {
+                    userId: currentUser.uid,
+                    userName: currentUser.displayName || 'Anonymous',
+                    userEmail: currentUser.email,
+                    items: cart,
+                    total: total,
+                    status: 'pending',
+                    createdAt: firebase.firestore.FieldValue.serverTimestamp()
+                };
+
+                await db.collection('orders').add(orderData);
+                
+                showNotification(`Order placed successfully! Total: ₹${total.toFixed(2)}`, 'success');
+                
+                // Clear cart
+                cart = [];
+                await saveUserCart();
+                updateCartUI();
+                toggleCartModal();
+                
+            } catch (error) {
+                console.error('Checkout error:', error);
+                showNotification('Failed to place order. Please try again.', 'error');
+            }
+        }
+
+        // Profile Functions
+        async function handleUpdateProfile(e) {
+            e.preventDefault();
+            
+            const name = document.getElementById('updateName').value.trim();
+            if (!name) {
+                showNotification('Name is required', 'error');
+                return;
+            }
+
+            try {
+                const phone = document.getElementById('updatePhone').value.trim();
+                const location = document.getElementById('updateLocation').value.trim();
+
+                // Update Firebase Auth profile
+                await currentUser.updateProfile({
+                    displayName: name
+                });
+
+                // Update Firestore user document
+                await db.collection('users').doc(currentUser.uid).update({
+                    name: name,
+                    phone: phone,
+                    location: location,
+                    updatedAt: firebase.firestore.FieldValue.serverTimestamp()
+                });
+
+                // Update products with new seller name
+                const userProductsQuery = await db.collection('products').where('sellerId', '==', currentUser.uid).get();
+                const batch = db.batch();
+                
+                userProductsQuery.forEach((doc) => {
+                    batch.update(doc.ref, { sellerName: name });
+                });
+                
+                await batch.commit();
+
+                updateUserInfo();
+                updateAccountInfo();
+                showNotification('Profile updated successfully!', 'success');
+                
+            } catch (error) {
+                console.error('Error updating profile:', error);
+                showNotification('Failed to update profile', 'error');
+            }
+        }
+
+        // Navigation Functions
+        function switchTab(tab) {
+            // Hide all sections
+            document.querySelectorAll('.section').forEach(section => section.classList.add('hidden'));
+            
+            // Show selected section
+            document.getElementById(tab + 'Section').classList.remove('hidden');
+            
+            // Update navigation
+            document.querySelectorAll('.nav-item').forEach(item => item.classList.remove('active'));
+            document.querySelector(`[data-tab="${tab}"]`).classList.add('active');
+            
+            currentTab = tab;
+            
+            // Load section-specific data
+            if (tab === 'market') {
+                updateMarketStats();
+            } else if (tab === 'account') {
+                updateAccountInfo();
+            }
+            
+            // Scroll to top
+            document.querySelector('.content-wrapper').scrollTop = 0;
+        }
+
+        // Display Functions
         function displayProducts(products, containerId) {
             const container = document.getElementById(containerId);
             if (!container) return;
+
             if (!products || products.length === 0) {
                 container.innerHTML = '<div class="col-span-full text-center text-gray-500 py-8">No products found</div>';
                 return;
             }
+
             container.innerHTML = products.map(product => {
-                const isOwnProduct = currentUser && product.sellerId === currentUser.id;
-                const addButton = isOwnProduct && containerId === 'productsGrid' ? '' : 
-                    `<button onclick="addToCart('${product.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors">
-                        <i class="fas fa-cart-plus mr-1"></i>Add
-                    </button>`;
+                const isOwnProduct = currentUser && product.sellerId === currentUser.uid;
+                const canAddToCart = !isOwnProduct && product.quantity > 0;
+                
+                let actionButton = '';
+                if (isOwnProduct) {
+                    actionButton = `<div class="own-product-tag">Your Product</div>`;
+                } else if (canAddToCart) {
+                    actionButton = `
+                        <button onclick="addToCart('${product.id}')" class="bg-green-500 hover:bg-green-600 text-white px-4 py-2 rounded-xl font-semibold transition-colors">
+                            <i class="fas fa-cart-plus mr-1"></i>Add to Cart
+                        </button>`;
+                } else {
+                    actionButton = `
+                        <button class="btn-disabled text-white px-4 py-2 rounded-xl font-semibold cursor-not-allowed">
+                            <i class="fas fa-times mr-1"></i>Out of Stock
+                        </button>`;
+                }
+
                 return `
                     <div class="product-card bg-white rounded-2xl overflow-hidden card-shadow">
                         <div class="relative">
@@ -749,17 +1208,22 @@
                             <div class="absolute top-3 left-3">
                                 <span class="category-tag">${getCategoryIcon(product.category)} ${product.category}</span>
                             </div>
+                            ${product.quantity <= 0 ? '<div class="absolute top-3 right-3 bg-red-500 text-white px-2 py-1 rounded-lg text-xs font-semibold">Out of Stock</div>' : ''}
                         </div>
                         <div class="p-4">
                             <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
-                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description || 'Fresh and organic produce'}</p>
+                            <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
                             <div class="flex items-center justify-between mb-3">
                                 <div class="price-tag">₹${product.price}/kg</div>
-                                <span class="text-sm text-gray-500"><i class="fas fa-weight mr-1"></i>${product.quantity}kg available</span>
+                                <span class="text-sm text-gray-500">
+                                    <i class="fas fa-weight mr-1"></i>${product.quantity}kg available
+                                </span>
                             </div>
                             <div class="flex items-center justify-between">
-                                <div class="text-xs text-gray-500"><i class="fas fa-user mr-1"></i>by ${product.sellerName}</div>
-                                ${addButton}
+                                <div class="text-xs text-gray-500">
+                                    <i class="fas fa-user mr-1"></i>by ${product.sellerName}
+                                </div>
+                                ${actionButton}
                             </div>
                         </div>
                     </div>
@@ -767,26 +1231,53 @@
             }).join('');
         }
 
-        function getDefaultImage(category) {
-            const images = {
-                fruits: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
-                vegetables: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
-                others: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
-            };
-            return images[category] || images.others;
+        function displayUserProducts(products, containerId) {
+            const container = document.getElementById(containerId);
+            if (!container) return;
+
+            if (!products || products.length === 0) {
+                container.innerHTML = '';
+                return;
+            }
+
+            container.innerHTML = products.map(product => `
+                <div class="product-card bg-white rounded-2xl overflow-hidden card-shadow">
+                    <div class="relative">
+                        <img src="${product.image}" alt="${product.name}" class="w-full h-48 object-cover" onerror="this.src='${getDefaultImage(product.category)}'">
+                        <div class="absolute top-3 left-3">
+                            <span class="category-tag">${getCategoryIcon(product.category)} ${product.category}</span>
+                        </div>
+                        <div class="absolute top-3 right-3">
+                            <button onclick="deleteProduct('${product.id}')" class="bg-red-500 hover:bg-red-600 text-white p-2 rounded-full transition-colors">
+                                <i class="fas fa-trash text-sm"></i>
+                            </button>
+                        </div>
+                    </div>
+                    <div class="p-4">
+                        <h3 class="font-semibold text-lg text-gray-800 mb-2">${product.name}</h3>
+                        <p class="text-gray-600 text-sm mb-3 line-clamp-2">${product.description}</p>
+                        <div class="flex items-center justify-between mb-3">
+                            <div class="price-tag">₹${product.price}/kg</div>
+                            <span class="text-sm text-gray-500">
+                                <i class="fas fa-weight mr-1"></i>${product.quantity}kg available
+                            </span>
+                        </div>
+                        <div class="text-center">
+                            <div class="own-product-tag inline-block">Your Product</div>
+                        </div>
+                    </div>
+                </div>
+            `).join('');
         }
 
-        function getCategoryIcon(category) {
-            const icons = { fruits: '🍎', vegetables: '🥕', others: '🌿' };
-            return icons[category] || '🌿';
-        }
-
+        // Search and Filter Functions
         function handleSearch(e) {
             const query = e.target.value.toLowerCase().trim();
             const filtered = allProducts.filter(product =>
                 product.name.toLowerCase().includes(query) ||
                 (product.description && product.description.toLowerCase().includes(query)) ||
-                product.category.toLowerCase().includes(query)
+                product.category.toLowerCase().includes(query) ||
+                product.sellerName.toLowerCase().includes(query)
             );
             displayProducts(filtered, 'productsGrid');
         }
@@ -805,195 +1296,65 @@
             activeBtn.classList.add('bg-green-100', 'text-green-800');
         }
 
-        function addToCart(productId) {
-            const product = allProducts.find(p => p.id === productId);
-            if (!product) return;
-            const existingItem = cart.find(item => item.id === productId);
-            if (existingItem) {
-                if (existingItem.quantity < product.quantity) existingItem.quantity += 1;
-                else {
-                    showNotification('Maximum quantity reached', 'error');
-                    return;
-                }
-            } else {
-                cart.push({ ...product, quantity: 1 });
-            }
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            showNotification(`${product.name} added to cart!`, 'success');
-        }
-
-        function removeFromCart(productId) {
-            cart = cart.filter(item => item.id !== productId);
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            displayCartItems();
-        }
-
-        function updateCartQuantity(productId, change) {
-            const item = cart.find(item => item.id === productId);
-            if (!item) return;
-            const product = allProducts.find(p => p.id === productId);
-            if (change > 0 && item.quantity >= product.quantity) {
-                showNotification('Maximum quantity reached', 'error');
-                return;
-            }
-            item.quantity += change;
-            if (item.quantity <= 0) removeFromCart(productId);
-            else {
-                localStorage.setItem('cart', JSON.stringify(cart));
-                updateCartUI();
-                displayCartItems();
+        // UI Update Functions
+        function updateUserInfo() {
+            if (currentUser) {
+                const userName = currentUser.displayName || 'User';
+                document.getElementById('userGreeting').textContent = `Welcome, ${userName}!`;
             }
         }
 
-        function updateCartUI() {
-            const cartBadge = document.getElementById('cartBadge');
-            const floatingCart = document.getElementById('floatingCart');
-            const cartTotal = document.getElementById('cartTotal');
-            const totalItems = cart.reduce((sum, item) => sum + item.quantity, 0);
-            const totalPrice = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            cartBadge.textContent = totalItems;
-            cartTotal.textContent = `₹${totalPrice.toFixed(2)}`;
-            floatingCart.classList.toggle('hidden', totalItems === 0);
-        }
-
-        function toggleCartModal() {
-            const modal = document.getElementById('cartModal');
-            modal.classList.toggle('hidden');
-            if (!modal.classList.contains('hidden')) displayCartItems();
-        }
-
-        function displayCartItems() {
-            const container = document.getElementById('cartItems');
-            if (!cart.length) {
-                container.innerHTML = `
-                    <div class="text-center py-8 text-gray-500">
-                        <i class="fas fa-shopping-cart text-4xl mb-3"></i>
-                        <p>Your cart is empty</p>
-                    </div>`;
-                return;
-            }
-            container.innerHTML = cart.map(item => `
-                <div class="flex items-center space-x-3 bg-gray-50 rounded-xl p-3">
-                    <img src="${item.image}" alt="${item.name}" class="w-16 h-16 object-cover rounded-lg">
-                    <div class="flex-1">
-                        <h4 class="font-semibold text-gray-800">${item.name}</h4>
-                        <p class="text-sm text-gray-600">₹${item.price}/kg</p>
-                    </div>
-                    <div class="flex items-center space-x-2">
-                        <button onclick="updateCartQuantity('${item.id}', -1)" class="w-8 h-8 bg-gray-200 rounded-full flex items-center justify-center">
-                            <i class="fas fa-minus text-sm"></i>
-                        </button>
-                        <span class="w-8 text-center font-semibold">${item.quantity}</span>
-                        <button onclick="updateCartQuantity('${item.id}', 1)" class="w-8 h-8 bg-green-500 text-white rounded-full flex items-center justify-center">
-                            <i class="fas fa-plus text-sm"></i>
-                        </button>
-                    </div>
-                    <button onclick="removeFromCart('${item.id}')" class="text-red-500 hover:text-red-700">
-                        <i class="fas fa-trash"></i>
-                    </button>
-                </div>
-            `).join('');
-        }
-
-        function handleCheckout() {
-            if (!cart.length) {
-                showNotification('Your cart is empty!', 'error');
-                return;
-            }
-            const total = cart.reduce((sum, item) => sum + (item.price * item.quantity), 0);
-            showNotification(`Order placed successfully! Total: ₹${total.toFixed(2)}`, 'success');
-            cart = [];
-            localStorage.setItem('cart', JSON.stringify(cart));
-            updateCartUI();
-            toggleCartModal();
-        }
-
-        function handleUpdateProfile(e) {
-            e.preventDefault();
-            const name = document.getElementById('updateName').value.trim();
-            if (!name) {
-                showNotification('Name is required', 'error');
-                return;
-            }
-            const updatedData = {
-                ...currentUser,
-                name: name,
-                phone: document.getElementById('updatePhone').value.trim(),
-                location: document.getElementById('updateLocation').value.trim()
-            };
-            currentUser = updatedData;
-            localStorage.setItem('currentUser', JSON.stringify(updatedData));
-            updateUserInfo();
-            updateAccountInfo();
-            showNotification('Profile updated successfully!', 'success');
-        }
-
-        function updateAccountInfo() {
+        async function updateAccountInfo() {
             if (!currentUser) return;
-            document.getElementById('profileName').textContent = currentUser.name;
-            document.getElementById('profileEmail').textContent = currentUser.email;
-            document.getElementById('updateName').value = currentUser.name;
-            document.getElementById('updatePhone').value = currentUser.phone || '';
-            document.getElementById('updateLocation').value = currentUser.location || '';
-            document.getElementById('memberSince').textContent = currentUser.memberSince || new Date().toLocaleDateString();
-            const userProductCount = allProducts.filter(product => product.sellerId === currentUser.id).length;
-            document.getElementById('userProductCount').textContent = userProductCount;
+
+            try {
+                const userDoc = await db.collection('users').doc(currentUser.uid).get();
+                const userData = userDoc.exists ? userDoc.data() : {};
+
+                document.getElementById('profileName').textContent = currentUser.displayName || 'User Name';
+                document.getElementById('profileEmail').textContent = currentUser.email;
+                document.getElementById('updateName').value = currentUser.displayName || '';
+                document.getElementById('updatePhone').value = userData.phone || '';
+                document.getElementById('updateLocation').value = userData.location || '';
+                
+                if (userData.memberSince) {
+                    const memberDate = userData.memberSince.toDate();
+                    document.getElementById('memberSince').textContent = memberDate.toLocaleDateString();
+                }
+
+                const userProductCount = allProducts.filter(product => product.sellerId === currentUser.uid).length;
+                document.getElementById('userProductCount').textContent = userProductCount;
+            } catch (error) {
+                console.error('Error updating account info:', error);
+            }
         }
 
         function updateMarketStats() {
             document.getElementById('totalProducts').textContent = allProducts.length;
-            document.getElementById('totalSellers').textContent = [...new Set(allProducts.map(p => p.sellerId))].length;
+            const uniqueSellers = [...new Set(allProducts.map(p => p.sellerId))];
+            document.getElementById('totalSellers').textContent = uniqueSellers.length;
         }
 
-        function loadSampleData() {
-            const sampleProducts = [
-                {
-                    id: 'sample_1',
-                    name: 'Fresh Organic Apples',
-                    category: 'fruits',
-                    quantity: 25,
-                    price: 399,
-                    image: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
-                    description: 'Crisp and sweet organic apples, perfect for snacking or baking.',
-                    sellerId: 'sample_seller_1',
-                    sellerName: 'Green Valley Farm',
-                    dateAdded: new Date().toISOString()
-                },
-                {
-                    id: 'sample_2',
-                    name: 'Fresh Carrots',
-                    category: 'vegetables',
-                    quantity: 15,
-                    price: 199,
-                    image: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
-                    description: 'Freshly harvested carrots, rich in vitamins and perfect for cooking.',
-                    sellerId: 'sample_seller_2',
-                    sellerName: 'Sunny Acres',
-                    dateAdded: new Date().toISOString()
-                },
-                {
-                    id: 'sample_3',
-                    name: 'Farm Fresh Tomatoes',
-                    category: 'vegetables',
-                    quantity: 30,
-                    price: 299,
-                    image: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop',
-                    description: 'Juicy vine-ripened tomatoes, perfect for salads and cooking.',
-                    sellerId: 'sample_seller_3',
-                    sellerName: 'Harvest Moon Farm',
-                    dateAdded: new Date().toISOString()
-                }
-            ];
-            const existingProducts = JSON.parse(localStorage.getItem('allProducts')) || [];
-            if (!existingProducts.length) {
-                localStorage.setItem('allProducts', JSON.stringify(sampleProducts));
-                allProducts = sampleProducts;
-            } else {
-                allProducts = existingProducts;
-            }
-            loadAllProducts();
+        // Utility Functions
+        function getDefaultImage(category) {
+            const images = {
+                fruits: 'https://images.unsplash.com/photo-1619566636858-adf3ef46400b?w=400&h=300&fit=crop',
+                vegetables: 'https://images.unsplash.com/photo-1540420773420-3366772f4999?w=400&h=300&fit=crop',
+                others: 'https://images.unsplash.com/photo-1542838132-92c53300491e?w=400&h=300&fit=crop'
+            };
+            return images[category] || images.others;
+        }
+
+        function getCategoryIcon(category) {
+            const icons = { fruits: '🍎', vegetables: '🥕', others: '🌿' };
+            return icons[category] || '🌿';
+        }
+
+        function showNotification(message, type) {
+            notification.textContent = message;
+            notification.className = `notification ${type}`;
+            notification.classList.remove('hidden');
+            setTimeout(() => notification.classList.add('hidden'), 4000);
         }
     </script>
 </body>
